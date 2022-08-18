@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock css %}
+
+{% block title %}
+  zone page
+{% endblock title %}
+
+{% block main %}
+  <div class="search_zone">
+    <form class="search_form" method="get" action="{% url 'search' %}">
+      {% csrf_token %}
+      <input type="search" name="search_txt" placeholder="Search a zone here" required>
+      <button type="submit">GO</button>
+    </form>
+    <a class="zone_new" href="{% url 'Zone_Create' user.username %}">
+      <img src="{% static 'img/new_post.png' %}" alt="new-zone"> &nbsp;Create a zone
+    </a>
+  </div>
+
+  {% for zone in zones %}
+    <div class="zone">
+      <div class="zone_left">
+        <img class="zone_img" src="{{zone.image.url}}" alt="">
+        <div>
+          <h1>
+            <a href="{% url 'zone_message' zone.pk %}">{{zone.name}}</a>
+          </h1>
+          {% if zone.description %}
+            <small>{{zone.description}},</small>
+          {% endif %}
+          {% if zone.creator == None %}
+            <small>This zone was created on {{zone.timestamp}}, the creator of this zone is no longer active.</small>
+          {% else %}
+            <small>Created by {{zone.creator.first_name}} {{zone.creator.last_name}}, since ({{zone.timestamp|date:'F, Y'}})</small>
+          {% endif %}
+        </div>
+      </div>
+      <p>{{zone.custom_zone_type}} zone</p>
+    </div>
+  {% endfor %}
+
+  {% if zones.paginator.count > 5 %}
+    <div class="paginator">
+      {% if zones.has_previous %}
+        <a href="?page={{zones.previous_page_number}}" class="page_surf">Recent zones</a>
+      {% endif %}
+
+      {% for i in zones.paginator.page_range %}
+        {% if zones.number == i %}
+          <a href="?page={{i}}" class="page_current">{{i}}</a>
+        {% elif i > zones.number|add:'-3' and i < zones.number|add:'3' %}
+          <a href="?page={{i}}" class="page_num">{{i}}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if zones.has_next %}
+        <a href="?page={{zones.next_page_number}}" class="page_surf">Previous zones</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% for zone in zones_not_in %}
+    <div class="zone_to_join">
+      <div class="zone_left">
+        <img class="zone_img" src="{{zone.image.url}}" alt="img">
+        <div>
+          <small class="z_like">Zone you may like to join</small>
+          <br>
+          <h1>
+            <a href="{% url 'zone_message' zone.pk %}">{{zone.name}}</a>
+          </h1>
+          <small>
+          {% if zone.description %}
+            <small>{{zone.description}},</small>
+          {% endif %}
+          {% if zone.creator == None %}
+            <small>This zone was created on {{zone.timestamp}}, the creator of this zone is no longer active.</small>
+          {% else %}
+            <small>Created by {{zone.creator.first_name}} {{zone.creator.last_name}}, since ({{zone.timestamp|date:'F, Y'}})</small>
+          {% endif %}
+        </div>
+      </div>
+      <p>{{zone.custom_zone_type}} zone</p>
+      <a href="{% url 'join_zone' zone.id %}">Join zone</a></small>
+    </div>
+  {% endfor %}
+
+  {% if zones_not_in.paginator.count > 5 %}
+    <div class="paginator">
+      {% if zones_not_in.has_previous %}
+        <a href="?page={{zones_not_in.previous_page_number}}" class="page_surf">Recent zones</a>
+      {% endif %}
+
+      {% for i in zones_not_in.paginator.page_range %}
+        {% if zones_not_in.number == i %}
+          <a href="?page={{i}}" class="page_current">{{i}}</a>
+        {% elif i > zones_not_in.number|add:'-3' and i < zones_not_in.number|add:'3' %}
+          <a href="?page={{i}}" class="page_num">{{i}}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if zones_not_in.has_next %}
+        <a href="?page={{zones_not_in.next_page_number}}" class="page_surf">Previous zones</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock main %}

@@ -1,0 +1,280 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block css %}
+    <!-- inheritance -->
+  {% endblock css %}
+  <script src="{% static 'js/base.js' %}"></script>
+  {% block js %}
+    <!-- inheritance -->
+  {% endblock js %}
+  <title>
+    Zazzone |
+    {% block title %}
+      <!-- inheritance -->
+    {% endblock title %}
+  </title>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header_column">
+
+        <div class="header_left">
+          {% if request.user.is_authenticated %}
+            <a href="{% url 'Home' %}" class="logo"><h1>Zazzone</h1></a>
+            <form action="{% url 'search' %}" method="get">
+              <input type="search" name="search_txt" placeholder="Search zazzone">
+              <button type="submit">search</button>
+            </form>
+            <button href="#" id="show_menu_sm" onclick="showMenuSm()">
+              <img src="{% static 'img/show_menu.webp' %}" alt="">
+            </button>
+            <button href="#" id="hide_menu_sm" onclick="hideMenuSm()">
+              <img src="{% static 'img/hide_menu.png' %}" alt="">
+            </button>
+          {% else %}
+            <a class="logo"><h1>Zazzone</h1></a>
+          {% endif %}
+        </div>
+
+        <div class="header_right">
+          {% if request.user.is_authenticated %}
+            <a href="{% url 'Profile' request.user.username %}" id="profile_link">
+              <img src="{{request.user.image.url}}" alt="">
+              <p>{{request.user.first_name}}</p>
+            </a>
+            <a href="{% url 'Home' %}">
+              <img src="{% static 'img/home.webp' %}" alt="">
+            </a>
+            <a href="{% url 'Profile' request.user %}" id="menu_list">
+              <img src="{{request.user.image.url}}" alt="">
+            </a>
+            <a href="{% url 'board:Board_Home' request.user.username %}" id="menu_list">
+              <img src="{% static 'img/board.jpg' %}" alt="">
+            </a>
+            <a href="{% url 'chat' request.user.username %}">
+              <img src="{% static 'img/chat-icon.jpg' %}" alt="">
+              {% if unread_msg %}
+                <span>
+                  {% if unread_msg.count == 0 %}
+                    <!-- pass -->
+                  {% elif unread_msg.count > 9 %}
+                    9 &plus;
+                  {% else %}
+                    {{unread_msg.count}}
+                  {% endif %}
+                </span>
+              {% endif %}
+            </a>
+            <a href="{% url 'zone_home' request.user %}">
+              <img src="{% static 'img/zone-icon.jpg' %}" alt="">
+            </a>
+            <button id="show_menu" onclick="showMenu()">
+              <img src="{% static 'img/show_menu.webp' %}" alt="">
+            </button>
+            <button id="hide_menu" onclick="hideMenu()">
+              <img src="{% static 'img/hide_menu.png' %}" alt="">
+            </button>
+          {% else %}
+            {% block link %}
+              <!-- inheritance -->
+            {% endblock link %}
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="main_column">
+        <div class="main_column_1">
+          
+          {% if request.user.is_authenticated %}
+            <div class="banner_img">
+              <img src="{{ request.user.profile.banner.url }}" alt="">
+            </div>
+        
+            <div class="board">
+              <img src="{{ request.user.image.url }}" alt="">
+              <a href="{% url 'board:Board_Create' request.user %}"><small> Add something on your board</small></a>
+            </div>
+        
+            <div class="profile_img">
+              <img src="{{request.user.image.url}}" alt="">
+            </div>
+        
+            <div class="other_links">
+              <hr>
+              <br>
+              <a href="{% url 'board:Board_Home' request.user %}">
+                <img src="{% static 'img/board.jpg' %}" alt=""> Board
+              </a>
+              <a href="{% url 'Blog_Home' %}">
+                <img src="{% static 'img/new_blog.webp' %}" alt=""> Blog
+              </a>
+              <a href="{% url 'Blog_Create' %}">
+                <img src="{% static 'img/new_post.png' %}" alt=""> Post
+              </a>
+            </div>
+        
+            <p class="list_ref_1">Find a friend</p>
+            <form class="search_friend" method="get" action="{% url 'search' %}">
+              {% csrf_token %}
+              <input type="search" name="search_txt" placeholder="Find a friend" required>
+              <button type="submit">find</button>
+            </form>
+            
+            <p class="list_ref_2">Friends</p>
+            {% for friend in request.user.friends.all|slice:":7" %}
+              {% if friend == request.user %}
+                <!-- pass -->
+              {% else %}
+                <div class="friend_list">
+                  <div>
+                    <img src="{{friend.image.url}}" alt="">
+                    <h3>
+                      <a href="{% url 'profile_user' friend %}">{{friend.first_name}} {{friend.last_name}}</a>
+                    </h3>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+            <br>
+          {% endif %}
+          <div class="other_links">
+            <a href="{% url 'about' %}">About</a>
+          </div>
+
+          {% block main_left %}
+            <!-- inheritance -->
+          {% endblock main_left %}
+      
+        </div>
+        <div class="main_column_2">
+      
+          {% if request.user.is_authenticated %}
+            <div class="pop">
+              <div class="board_pop">
+                <div>
+                  <img src="{{ request.user.image.url }}" alt="">
+                  <a href="{% url 'board:Board_Create' request.user %}"><small>Add something on your board</small></a>
+                </div>
+                <a href="{% url 'board:Board_Home' request.user %}" id="top_link">
+                  <img src="{% static 'img/board.jpg' %}" alt=""">Board
+                </a>
+                <button onclick="hideMenu()" class="times"><b>&times;</b></button>
+                <button onclick="hideMenuSm()" class="timesSm"><b>&times;</b></button>
+              </div>
+        
+              <div class="pop_mid_board">
+                <a href="{% url 'board:Board_Home' request.user %}" id="mid_linkSm">
+                  <img src="{% static 'img/board.jpg' %}" alt=""">Board
+                </a>
+                <a href="{% url 'board:board' request.user.board_owner.id %}">
+                  <img src="{{user.board_owner.image.url}}" alt=""">My board
+                </a>
+                <a href="{% url 'Gallery' request.user %}">
+                  <img src="{% static 'img/media_icon.png' %}" alt="new-post"">My gallery
+                </a>
+                <a href="{% url 'iratio' request.user request.user.id %}">My iRatio</a>
+                <a href="{% url  'privacy_page' %}">Privacy</a>
+                <a href="{% url  'profile_update' %}">Edit profile</a>
+                <a href="{% url 'password_change' %}">
+                  <img src="{% static 'img/pad_lock.jpg' %}" alt=""">Change password
+                </a>
+        
+                <div class="pop_friends_div">
+                  {% if request.user.friends.count > 3 %}
+                    <p class="list_ref_2">Friends</p>
+                  {% else %}
+                    <p class="list_ref_1">Find a friend</p>
+                    <form class="search_friend" method="get" action="{% url 'search' %}">
+                      {% csrf_token %}
+                      <input type="search" name="search_txt" placeholder="Find a friend" required>
+                      <button type="submit">find</button>
+                    </form>
+                  {% endif %}
+                  <div class="pop_friends">
+                    
+                  {% for follower in request.user.board_owner.followers.all %}
+                    {% if follower == request.user %}
+                      <!-- pass -->
+                    {% else %}
+                      <div class="friend_list">
+                        <div>
+                          <img src="{{follower.image.url}}" alt="">
+                          <h3>
+                            <a href="{% url 'profile_user' follower %}">{{follower.first_name}} {{follower.last_name}}</a>
+                          </h3>
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                  </div>
+                </div>
+                <div class="pop_mid_board">
+                  <a href="{% url 'about' %}">About</a>
+                </div>
+              </div>
+        
+              <div class="down_board_pop">
+                <a href="{% url 'Blog_Home' %}">
+                  <img src="{% static 'img/new_blog.webp' %}" alt="{{request.user}}-board" class="pop_img">Blog
+                </a>
+                <a href="{% url 'Blog_Create' %}">
+                  <img src="{% static 'img/new_post.png' %}" alt="new-post" class="pop_img">Post
+                </a>
+                <a href="{% url 'iratio_new' request.user %}">
+                  <img src="{% static 'img/new_post.png' %}" alt="new-post" class="pop_img">iRatio
+                </a>
+                <a href="{% url 'logout' %}">
+                  <img src="{% static 'img/logout.png' %}" alt="{request.user}}-board" class="pop_img">
+                </a>
+              </div>
+        
+            </div>
+
+            {% block detail_pop %}
+              <!-- inheritance for blog or board post detail (pop-up) -->
+            {% endblock detail_pop %}
+          {% endif %}
+          
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert-{{message.tags}}">
+                  <p>{{message}}</p>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          {% block main %}
+            <!-- inheritance -->
+          {% endblock main %}
+      
+          {% if request.user.is_authenticated %}
+            {% if request.user.friends.all.count > 5 %}
+              <!-- pass -->
+            {% else %}
+              <div class="search_user_or_board" placeholder="Search zazzone">
+                <small>Hi {{request.user.first_name}} you can search</small>
+                <a href="{% url 'search' %}">friends or find board to follow</a>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% block pagination %}
+            <!-- inheritance -->
+          {% endblock pagination %}
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

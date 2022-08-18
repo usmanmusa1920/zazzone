@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/single.css' %}">
+{% endblock css %}
+
+{% block title %}
+  delete blog post
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Delete a post</h1>
+    <a href="{% url 'Blog_Detail' post.pk %}">Back</a>
+  </div>
+
+  <div class="down_head">
+    <small>Are you sure to delete this post?</small>
+    <form method="POST" class="del_form" enctype="multipart/form-data">
+      {% csrf_token %}
+        <button type="submit">Yes delete</button>
+    </form>
+  </div>
+
+  <div class="post">
+    <div class="post_head">
+      <div class="post_head_column">
+        <div class="p_head_1">
+          <div class="p_head_1_img">
+            <img src="{{ post.publisher.image.url }}" alt="">
+          </div>
+          <div class="p_head_1_info">
+            <p>
+              <a>{{post.publisher.first_name}} {{post.publisher.last_name}}</a>
+              {% if post.publisher.is_verified %}
+                <span class="verify">
+                  v
+                </span>
+              {% endif %}
+            </p>
+            <small>{{post.pub_date | date:'F d, Y'}}</small>
+          </div>
+        </div>
+        <div class="p_head_2">
+          <a href="{% url 'Blog_Detail' post.pk %}">
+            <img src="{% static 'img/info.jpg' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="post_main">
+      <div class="post_main_column">
+        {% if post.title %}
+          <h1>{{post.title}}</h1>
+        {% endif %}
+        {% if post.image %}
+          <div class="post_main_img">
+            <img src="{{post.image.url}}" alt="">
+          </div>
+        {% endif %}
+        {% if post.text %}
+          <div>
+            <p>
+              {{post.text}}
+            </p>
+          </div>
+        {% endif %}
+        {% if post.code %}
+          <div class="post_main_snippet">
+            <pre><code>{{post.code}}</code></pre>
+          </div>
+        {% endif %}
+        <hr>
+        <form method="POST" class="bottom" enctype="multipart/form-data">
+          {% csrf_token %}
+          <button type="submit" class="del_btn">Delete</button>
+          <div>
+            <a href="{% url 'Blog_Detail' post.pk %}" class="cancel_link">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+{% endblock main %}

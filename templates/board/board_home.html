@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  board home
+{% endblock title %}
+
+{% block main %}
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post">
+        <div class="post_head">
+          <div class="post_head_column">
+            <div class="p_head_1">
+              <div class="p_head_1_img">
+                <img src="{{ post.publisher.image.url }}" alt="">
+              </div>
+              <div class="p_head_1_info">
+                <p>
+                  <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">{{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}</a>
+                  {% if post.publisher.is_verified %}
+                    <span class="verify">
+                      v
+                    </span>
+                  {% endif %}
+                </p>
+                <small>{{post.pub_date | date:'F d, Y'}}</small>
+              </div>
+            </div>
+            <div class="p_head_2">
+              <a href="{% url 'board:Board_Detail' post.pk request.user %}">
+                <img src="{% static 'img/info.jpg' %}" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="post_main">
+          <div class="post_main_column">
+            {% if post.title %}
+              <h1>{{post.title}}</h1>
+            {% endif %}
+            {% if post.image %}
+              <div class="post_main_img">
+                <img src="{{post.image.url}}" alt="">
+              </div>
+            {% endif %}
+            {% if post.text|length >= 220 %}
+              {% if post.text %}
+                <p>
+                  {{post.text|truncatechars:200}}
+                  <a class="post_more" href="{% url 'board:Board_Detail' post.pk request.user %}"><b>read more</b></a>
+                </p>
+              {% endif %}
+            {% else %}
+              {% if post.text %}
+                <p>
+                  {{post.text}}
+                </p>
+              {% endif %}
+            {% endif %}
+            {% if post.code %}
+              <div class="post_main_snippet">
+                <pre><code>{{post.code}}</code></pre>
+              </div>
+            {% endif %}
+            <hr>
+            <small class="post_ranks">
+              {% if post.likers.all.count > 1 %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% else %}
+                  {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% endif %}
+              {% else %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like
+                {% else %}
+                  {{post.likers.all.count}} like
+                {% endif %}
+              {% endif %}
+    
+              ,
+              
+              {% if post.comment_set.count == 0 %}
+                {{post.comment_set.count}} comment
+              {% else %}
+                {{post.comment_set.count}} comment{{post.comment_set.count|pluralize}}
+              {% endif %}
+            </small>
+            <div class="post_foot">
+              <div class="post_foot_column">
+                {% if request.user in post.likers.all %}
+                  <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="liked">
+                    {% csrf_token %}
+                    <button type="submit">Liked</button>
+                  </form>
+                {% else %}
+                  <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="post_form_1">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                  </form>
+                {% endif %}
+                <form action="{% url 'board:Board_Detail' post.pk request.user %}" method="post" class="post_form_2">
+                  {% csrf_token %}
+                  <img src="{{ request.user.image.url }}" alt="">
+                  <input type="text" name="body" placeholder="Write a comment" required>
+                  <button type="submit">Comment</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock main %}
+
+{% block pagination %}
+  {% if is_paginated %}
+    <div class="paginator" id="paginator">
+      {% if page_obj.has_previous %}
+        {% if user.is_superuser %}
+          <a href="?page=1" class="page_surf">First</a>
+        {% endif %}
+        <a href="?page={{page_obj.previous_page_number}}" class="page_surf">Previous</a>
+      {% endif %}
+
+      {% if user.is_superuser %}
+        {% for i in page_obj.paginator.page_range %}
+          {% if page_obj.number == i %}
+            <a href="?page={{i}}" class="page_current">{{i}}</a>
+          {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+            <a href="?page={{i}}" class="page_num">{{i}}</a>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      
+      {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}" class="page_surf">Next</a>
+        {% if user.is_superuser %}
+          <a href="?page={{page_obj.paginator.num_pages}}" class="page_surf">Last</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock pagination %}

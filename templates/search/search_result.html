@@ -1,0 +1,1470 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% endblock css %}
+
+{% block js %}
+ <script src="{% static 'js/search.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  search
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <form method="get">
+      {% csrf_token %}
+      <input type="search" name="search_txt" placeholder="Search sakyum here"required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  {% if search_panel != None and search_panel != '' and search_panel != ' ' and search_panel != '  ' %}
+    <div class="search_notify">
+      <p><b>You just search for:</b> <strong><i><span>{{search_panel}}</span></i></strong>
+      </p>
+    </div>
+  {% endif %}
+
+  {% if paginator_req_rec.count > 1 %}
+    <div class="f_list">
+      <p>{{paginator_req_rec.count}} friend requests are waiting for your approve</p>
+    </div>
+  {% elif paginator_req_rec.count == 1 %}
+    <div class="f_list">
+      <p>You have {{paginator_req_rec.count}} friend request to accept</p>
+    </div>
+  {% else %}
+    <!-- pass -->
+  {% endif %}
+
+  {% for friend in friend_req_receiver %}
+    <div class="f_list">
+      <div class="div">
+        <img src="{{friend.sender.image.url}}" alt="{{friend.sender}}">
+        <div class="a_div">
+          <a href="{% url 'profile_user' friend.sender.username %}">
+            <h2>{{friend.sender.first_name}} {{friend.sender.last_name}}</h2>
+          </a>
+          <small>@{{friend.sender}}</small>
+        </div>
+      </div>
+
+      <div class="b_div">
+        <p>
+          <form class="a1" action="{% url 'friend_request_accept' friend.id %}">
+            <button type="submit">Accept request</button>
+          </form>
+        </p> &nbsp; &nbsp;
+        <p>
+          <form class="a2" action="{% url 'decline_request' friend.id %}">
+            <button type="submit">Decline request</button>
+          </form>
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+        
+  {% if paginator_req_rec.count > 2 %}
+    <div class="paginate_req">
+      {% if friend_req_receiver.has_previous %}
+        <a href="?page={{friend_req_receiver.previous_page_number}}" class="page_req_surf">Recent request</a>
+      {% endif %}
+
+      {% if friend_req_receiver.has_next %}
+        <a href="?page={{friend_req_receiver.next_page_number}}" class="page_req_surf">Previous request</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if paginator_req_sen.count > 1 %}
+    <div class="f_list">
+      <p>You sent a total of {{paginator_req_sen.count}} <b>Friend requests</b> that are not approved yet</p>
+    </div>
+  {% elif paginator_req_sen.count == 1 %}
+    <div class="f_list">
+      <p>You sent one <b>Friend request</b> that yet is not approved</p>
+    </div>
+  {% else %}
+    <!-- pass -->
+  {% endif %}
+
+  {% for friend in friend_req_send %}
+    <div class="f_list">
+      <div class="div">
+        <img src="{{friend.receiver.image.url}}" alt="{{friend.receiver}}">
+        <div class="a_div">
+          <a href="{% url 'profile_user' friend.receiver.username %}">
+            <h2>{{friend.receiver.first_name}} {{friend.receiver.last_name}}</h2>
+          </a>
+          <small>@{{friend.receiver}}</small>
+        </div>
+      </div>
+      <div>
+        <p>
+          <form class="a2" action="{% url 'friend_request_accept' friend.id %}""><button type="submit">Cancel friend request</button></form>
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+        
+  {% if paginator_req_sen.count > 2 %}
+    <div class="paginate_req">
+      {% if friend_req_send.has_previous %}
+        <a href="?page={{friend_req_send.previous_page_number}}" class="page_req_surf">Recent request</a>
+      {% endif %}
+
+      {% if friend_req_send.has_next %}
+        <a href="?page={{friend_req_send.next_page_number}}" class="page_req_surf">Previous request</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="select_result">
+    <a type="submit" class="all_result_btn" id="all_result_btn" onclick="setTimeout(show_all_result, 1000)">All</a>
+    <a type="submit" class="people_result_btn" onclick="setTimeout(show_people_result, 1000)">People</a>
+    <a type="submit" class="board_result_btn" onclick="setTimeout(show_user_board_result, 1000)">Board</a>
+    <a type="submit" class="blog_post_result_btn" onclick="setTimeout(show_blog_post_result, 1000)">Post</a>
+    <a type="submit" class="board_post_result_btn" onclick="setTimeout(show_board_post_result, 1000)">Board post</a>
+    <a type="submit" class="zone_result_btn" onclick="setTimeout(show_zone_post_result, 1000)">Zone</a>
+  </div>
+
+  {% if searches.paginator.count > 3 %}
+    <div class="search_his_1">
+      <p>
+        <span>You made a total of {{searches.paginator.count}} searches in our sakyum search engine</span>
+      </p>
+    </div>
+  {% endif %}
+
+  {% for history in searches %}
+    <div class="search_his_2">
+      <p><b>You searched:</b><span>{{history.data_to_search}}</span> </p>
+      <form action="{% url 'delete_search' history.id %}">
+        <button type="submit">&times;</button>
+      </form>
+    </div>
+  {% endfor %}
+
+  <div class="all_result">
+
+    <!-- This is for users that matches the search result -->
+    {% if user_filter %}
+      <p class="result_note">This is what we found for your search of <span>{{search_panel}}</span> that matches user's account in our DB</p>
+      {% for user_result in user_filter %}
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{user_result.image.url}}" alt="{{user_result.username}}">
+            </div>
+            <div class="side_info">
+              <span>
+                {% if user_result.is_verified %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'Profile' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'profile_user' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% endif %}
+                    <span class="verify">
+                      v
+                    </span>
+                  </h2>
+                {% else %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'Profile' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'profile_user' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% endif %}
+                  </h2>
+                {% endif %}
+              </span>
+              <small>@{{user_result.username}}</small>
+              <small>
+                {% if user_result.profile.bio %}
+                  {% if user_result.profile.bio|length >= 0 %}
+                    {{user_result.profile.bio|truncatechars:25}}
+                  {% endif %}
+                {% endif %}
+              </small>
+            </div>
+          </div>
+
+          <div class="friend_div">
+            {% if user_result not in request.user.friends.all and user_result != request.user %}
+              <a href="{% url 'friend_request' user_result.id %}" class="peace"><p>Add friend</p></a>
+            {% else %}
+              {% if user_result == request.user %}
+                <!-- pass -->
+              {% else %}
+                <a href="{% url 'friend_remove' user_result.id %}" class="danger"><p>Unfriend friend</p></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+          
+      {% if paginator_users.count > 5 %}
+        <div class="paginator_all">
+          {% if user_filter.has_previous %}
+            <a type="submit" onclick="setTimeout(show_people_result, 1000)">Show more people</a>
+          {% else %}
+            {% if user_filter.has_next %}
+              <a type="submit" onclick="setTimeout(show_people_result, 1000)">People</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+
+    <!-- This is for user boards that matches the search result -->
+    {% if user_filter %}
+      <p class="result_note">This is what we found for your search of <span>{{search_panel}}</span> that matches user's board in our DB</p>
+      {% for user_result in user_filter %}
+        
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{user_result.board_owner.image.url}}" alt="{{user_result.board_owner.name.first_name}}- board">
+            </div>
+            <div class="side_info">
+              <span>
+                {% if user_result.board_owner.name.is_verified %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% endif %}
+                    <span class="verify">
+                      v
+                    </span>
+                  </h2>
+                {% else %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% endif %}
+                  </h2>
+                {% endif %}
+              </span>
+              <small>@{{user_result.first_name}} {{user_result.last_name}} Board</small>
+              <small>
+                {% if user_result.board_owner.description %}
+                  {% if user_result.board_owner.description|length >= 0 %}
+                    {{user_result.board_owner.description|truncatechars:25}}
+                  {% endif %}
+                {% endif %}
+              </small>
+            </div>
+          </div>
+          <div class="friend_div">
+            {% if request.user not in user_result.board_owner.followers.all %}
+              <a href="{% url 'board:follow_board' user_result.board_owner.owner.id %}" class="peace"><p>Follow</p></a>
+            {% else %}
+              {% if request.user == user_result.board_owner.name %}
+              {% else %}
+                <a href="{% url 'board:unfollow_board' user_result.board_owner.owner.id %}" class="danger"><p>Unfollow</p></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+          
+      {% if paginator_users.count > 5 %}
+        <div class="paginator_all">
+          {% if user_filter.has_previous %}
+            <a type="submit" onclick="setTimeout(show_user_board_result, 1000)">Show more board</a>
+          {% else %}
+            {% if user_filter.has_next %}
+              <a type="submit" onclick="setTimeout(show_user_board_result, 1000)">Board</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+
+    <!-- This is for blog post that matches the search result -->
+    {% if blog_posts_db %}
+      {% if search_panel == None %}
+        <!-- pass -->
+      {% else %}
+        <p class="result_note">This is what we found for your search of <span>{{search_panel}}</span> that matches blog post in our DB</p>
+      {% endif %}
+      {% for post in blog_posts_db %}
+        {% if post.title == None %}
+          <div class="search_result">
+            <div class="friend_d">
+              <div class="search_left">
+                <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+              </div>
+              <div class="side_info">
+                <span>
+                  {% if post.publisher.is_verified %}
+                    <p>
+                      <a href="{% url 'profile_user' post.publisher.username %}">
+                        {{post.publisher.first_name}} {{post.publisher.last_name}}
+                      </a>
+                      <span class="verify">
+                        v
+                      </span>
+                    </p>
+                  {% else %}
+                    <p>
+                      <a href="{% url 'profile_user' post.publisher.username %}">
+                        {{post.publisher.first_name}} {{post.publisher.last_name}}
+                      </a>
+                    </p>
+                  {% endif %}
+                </span>
+                <small>
+                  {% if post.title and post.title != None %}
+                    <a href="{% url 'Blog_Detail' post.pk %}">           
+                      <b>Title:</b> {{post.title|truncatechars:50}}
+                    </a>
+                  {% else %}
+                    {% if post.title|length >= 1 %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">
+                        <b>Post detail</b>
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                </small>
+                <p>
+                  {% if post.text and post.text != None %}
+                    {% if post.text|length >= 30 %}
+                      {{post.text|truncatechars:50}}
+                    {% else %}
+                      {{post.text}}
+                    {% endif %}
+                  {% endif %}
+                </p>
+                <div>
+                  {% if post.image and post.image != None %}
+                    <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {% if post.title == '' %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.is_verified %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                      </p>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.is_verified %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                      </p>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+          
+    {% if paginator_blog_posts.count > 5 %}
+      <div class="paginator_all">
+        {% if blog_posts_db.has_next %}
+          <a type="submit" onclick="setTimeout(show_blog_post_result, 1000)">Show more post</a>
+        {% else %}
+          {% if blog_posts_db.has_previous %}
+            <a type="submit" onclick="setTimeout(show_blog_post_result, 1000)">Post</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+
+    <!-- This is for board post that matches the search result -->
+    {% if board_posts_db %}
+      {% if search_panel == None %}
+        <!-- pass -->
+      {% else %}
+        <p class="result_note">This is what we found for your search of <span>{{search_panel}}</span> that matches board post in our DB</p>
+      {% endif %}
+      {% for post in board_posts_db %}
+        {% if post.title == None %}
+          <div class="search_result">
+            <div class="friend_d">
+              <div class="search_left">
+                <img src="{{post.publisher.owner.board_owner.image.url}}" alt="{{post.publisher.owner}}">
+              </div>
+              <div class="side_info">
+                <span>
+                  {% if post.publisher.owner.is_verified %}
+                    <p>
+                      <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                        {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board
+                      </a>
+                      <span class="verify">
+                        v
+                      </span>
+                    </p>
+                    <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                  {% else %}
+                    <p>
+                      <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                        {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board
+                      </a>
+                    </p>
+                    <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                  {% endif %}
+                </span>
+                <small>
+                  {% if post.title and post.title != None %}
+                    <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                      <b>Title:</b> {{post.title|truncatechars:50}}
+                    </a>
+                  {% else %}
+                    {% if post.title|length >= 1 %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                        <b>Post detail</b>
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                </small>
+                <p>
+                  {% if post.text and post.text != None %}
+                    {% if post.text|length >= 30 %}
+                      {{post.text|truncatechars:50}}
+                    {% else %}
+                      {{post.text}}
+                    {% endif %}
+                  {% endif %}
+                </p>
+                <div>
+                  {% if post.image and post.image != None %}
+                    <img src="{{post.image.url}}" alt="{{post.publisher.name}}-image-post"class="post_img" >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {% if post.title == '' %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.owner}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.owner.is_verified %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">     
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.owner.is_verified %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher.name}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+          
+    {% if paginator_board_posts.count > 5 %}
+      <div class="paginator_all">
+        {% if board_posts_db.has_previous %}
+          <a type="submit" onclick="setTimeout(show_board_post_result, 1000)">Show more board post</a>
+        {% else %}
+          {% if board_posts_db.has_next %}
+            <a type="submit" class="board_post_result_btn" onclick="setTimeout(show_board_post_result, 1000)">Board post</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+
+    <!-- This is for zone that matches the search result -->
+    {% if zones_db %}
+      <p class="result_note">This is what we found for your search of <span>{{search_panel}}</span> that matches zone in our DB</p>
+      {% for zone in zones_db %}
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{zone.image.url}}" alt="">
+            </div>
+            <div class="side_info">
+              <span>
+                <p>
+                  <a href="{% url 'zone_detail' zone.id request.user %}">
+                    {{zone.name}}
+                  </a>
+                </p>
+              </span>
+              <small>
+                {% if zone.description == None %}
+                {% else %}
+                  {% if zone.description == '' %}
+                  {% else %}
+                    Zone description: {{zone.description}}
+                  {% endif %}
+                {% endif %}
+              </small>
+              <div class="friend_div">
+                {% if request.user not in zone.members.all %}
+                  <a href="{% url 'join_zone' zone.id %}" class="peace"><p>Join zone</p></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+          
+    {% if paginator_zones.count > 5 %}
+      <div class="paginator_all">
+        {% if zones_db.has_previous %}
+          <a type="submit" onclick="setTimeout(show_zone_post_result, 1000)">Show more zone</a>
+        {% else %}
+          {% if zones_db.has_next %}
+            <a type="submit" onclick="setTimeout(show_zone_post_result, 1000)">Zone</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+
+    {% if user_filter %}
+      <!-- pass -->
+    {% else %}
+      {% if blog_posts_db %}
+      <!-- pass -->
+      {% else %}
+        {% if board_posts_db %}
+          <!-- pass -->
+        {% else %}
+          {% if zones_db %}
+            <!-- pass -->
+          {% else %}
+            {% if search_panel == None %}
+              <h3 class="no_result">No result found</h3>
+            {% elif search_panel == '' %}
+              <h3 class="no_result">No result found</h3>
+            {% elif search_panel == ' ' %}
+              <h3 class="no_result">No result found</h3>
+            {% elif search_panel == '  ' %}
+              <h3 class="no_result">No result found</h3>
+            {% else %}
+              <h3 class="no_result">Result not found for <span>{{search_panel}}</span></h3>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="people_result">
+    {% if user_filter %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search user or friend account in sakyum search engine</h3>
+      {% else %}
+        <h5 class="result_note">Your <span>{{search_panel}}</span> search that matches user's or friend account</h5>
+      {% endif %}
+      {% for user_result in user_filter %}
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{user_result.image.url}}" alt="{{user_result.username}}">
+            </div>
+            <div class="side_info">
+              <span>
+                {% if user_result.is_verified %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'Profile' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'profile_user' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% endif %}
+                    <span class="verify">
+                      v
+                    </span>
+                  </h2>
+                {% else %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'Profile' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'profile_user' user_result.username %}">
+                        {{user_result.first_name}} {{user_result.last_name}}
+                      </a>
+                    {% endif %}
+                  </h2>
+                {% endif %}
+              </span>
+              <small>@{{user_result.username}}</small>
+              <small>
+                {% if user_result.profile.bio %}
+                  {% if user_result.profile.bio|length >= 0 %}
+                    {{user_result.profile.bio|truncatechars:25}}
+                  {% endif %}
+                {% endif %}
+              </small>
+            </div>
+          </div>
+
+          <div class="friend_div">
+            {% if user_result not in request.user.friends.all and user_result != request.user %}
+              <a href="{% url 'friend_request' user_result.id %}" class="peace"><p>Add friend</p></a>
+            {% else %}
+              {% if user_result == request.user %}
+                <!-- pass -->
+              {% else %}
+                <a href="{% url 'friend_remove' user_result.id %}" class="danger"><p>Unfriend friend</p></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+          
+      {% if paginator_users.count > 5 %}
+        <div class="paginator">
+          {% if user_filter.has_previous %}
+            <a href="?page={{user_filter.previous_page_number}}&search_txt={{search_panel}}" class="page_surf">Next users result</a>
+          {% endif %}
+    
+          {% if user_filter.has_next %}
+            <a href="?page={{user_filter.next_page_number}}&search_txt={{search_panel}}" class="page_surf">Previous users result</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% else %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search a user or friend account in sakyum search engine</h3>
+      {% else %}
+        <h5 class="no_result">Result not found for <span>{{search_panel}}</span> in users DB, search sakyum, search your need here!</h5>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="user_board_result">
+    {% if user_filter %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search user or friend board in sakyum search engine</h3>
+      {% else %}
+        <h5 class="result_note">Your <span>{{search_panel}}</span> search that matches user's board</h5>
+      {% endif %}
+
+      {% for user_result in user_filter %}
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{user_result.board_owner.image.url}}" alt="{{user_result.board_owner.name.first_name}}- board">
+            </div>
+            <div class="side_info">
+              <span>
+                {% if user_result.board_owner.name.is_verified %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% endif %}
+                    <span class="verify">
+                      v
+                    </span>
+                  </h2>
+                {% else %}
+                  <h2>
+                    {% if user_result == me %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:board' user_result.board_owner.id %}">
+                        {{user_result.first_name}} {{user_result.last_name}} board
+                      </a>
+                    {% endif %}
+                  </h2>
+                {% endif %}
+              </span>
+              <small>@{{user_result.first_name}} {{user_result.last_name}} Board</small>
+              <small>
+                {% if user_result.board_owner.description %}
+                  {% if user_result.board_owner.description|length >= 0 %}
+                    {{user_result.board_owner.description|truncatechars:25}}
+                  {% endif %}
+                {% endif %}
+              </small>
+            </div>
+          </div>
+          <div class="friend_div">
+            {% if request.user not in user_result.board_owner.followers.all %}
+              <a href="{% url 'board:follow_board' user_result.board_owner.owner.id %}"  class="peace"><p>Follow</p></a>
+            {% else %}
+              {% if request.user == user_result.board_owner.name %}
+              {% else %}
+                <a href="{% url 'board:unfollow_board' user_result.board_owner.owner.id %}" class="danger"><p>Unfollow</p></a>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+          
+      {% if paginator_users.count > 5 %}
+        <div class="paginator">
+          {% if user_filter.has_previous %}
+            <a href="?page={{user_filter.previous_page_number}}&search_txt={{search_panel}}" class="page_surf">Next users result</a>
+          {% endif %}
+    
+          {% if user_filter.has_next %}
+            <a href="?page={{user_filter.next_page_number}}&search_txt={{search_panel}}" class="page_surf">Previous users result</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% else %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search a user or friend board in sakyum search engine</h3>
+      {% else %}
+        <h5 class="no_result">Result not found for <span>{{search_panel}}</span> in board DB, search sakyum, search your need here!</h5>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="blog_result">
+    {% if blog_posts_db %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search blog post in sakyum search engine</h3>
+      {% else %}
+        <h5 class="result_note">Your <span>{{search_panel}}</span> search that matches blog DB</h5>
+      {% endif %}
+
+      {% for post in blog_posts_db %}
+        {% if post.title == None %}
+          <div class="search_result">
+            <div class="friend_d">
+              <div class="search_left">
+                <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+              </div>
+              <div class="side_info">
+                <span>
+                  {% if post.publisher.is_verified %}
+                    <p>
+                      <a href="{% url 'profile_user' post.publisher.username %}">
+                        {{post.publisher.first_name}} {{post.publisher.last_name}}
+                      </a>
+                      <span class="verify">
+                        v
+                      </span>
+                    </p>
+                  {% else %}
+                    <p>
+                      <a href="{% url 'profile_user' post.publisher.username %}">
+                        {{post.publisher.first_name}} {{post.publisher.last_name}}
+                      </a>
+                    </p>
+                  {% endif %}
+                </span>
+                <small>
+                  {% if post.title and post.title != None %}
+                    <a href="{% url 'Blog_Detail' post.pk %}">           
+                      <b>Title:</b> {{post.title|truncatechars:50}}
+                    </a>
+                  {% else %}
+                    {% if post.title|length >= 1 %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">
+                        <b>Post detail</b>
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                </small>
+                <p>
+                  {% if post.text and post.text != None %}
+                    {% if post.text|length >= 30 %}
+                      {{post.text|truncatechars:50}}
+                    {% else %}
+                      {{post.text}}
+                    {% endif %}
+                  {% endif %}
+                </p>
+                <div>
+                  {% if post.image and post.image != None %}
+                    <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {% if post.title == '' %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.is_verified %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                      </p>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.is_verified %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'profile_user' post.publisher.username %}">
+                          {{post.publisher.first_name}} {{post.publisher.last_name}}
+                        </a>
+                      </p>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'Blog_Detail' post.pk %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'Blog_Detail' post.pk %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search blog post in sakyum search engine</h3>
+      {% else %}
+        <h5 class="no_result">Result not found for <span>{{search_panel}}</span> in blog DB, search sakyum, search your need here!</h5>
+      {% endif %}
+    {% endif %}
+          
+    {% if paginator_blog_posts.count > 5 %}
+      <div class="paginator">
+        {% if blog_posts_db.has_previous %}
+          <a href="?page={{blog_posts_db.previous_page_number}}&search_txt={{search_panel}}" class="page_surf">Next blog post result</a>
+        {% endif %}
+
+        {% if blog_posts_db.has_next %}
+          <a href="?page={{blog_posts_db.next_page_number}}&search_txt={{search_panel}}" class="page_surf">Previous blog post result</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="board_result">
+    {% if board_posts_db %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search board post in sakyum search engine</h3>
+      {% else %}
+        <h5 class="result_note">Your <span>{{search_panel}}</span> search that matches board post</h5>
+      {% endif %}
+
+      {% for post in board_posts_db %}
+        {% if post.title == None %}
+          <div class="search_result">
+            <div class="friend_d">
+              <div class="search_left">
+                <img src="{{post.publisher.owner.board_owner.image.url}}" alt="{{post.publisher.owner}}">
+              </div>
+              <div class="side_info">
+                <span>
+                  {% if post.publisher.owner.is_verified %}
+                    <p>
+                      <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                        {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board
+                      </a>
+                      <span class="verify">
+                        v
+                      </span>
+                    </p>
+                    <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                  {% else %}
+                    <p>
+                      <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                        {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board
+                      </a>
+                    </p>
+                    <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                  {% endif %}
+                </span>
+                <small>
+                  {% if post.title and post.title != None %}
+                    <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                      <b>Title:</b> {{post.title|truncatechars:50}}
+                    </a>
+                  {% else %}
+                    {% if post.title|length >= 1 %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                        <b>Post detail</b>
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                </small>
+                <p>
+                  {% if post.text and post.text != None %}
+                    {% if post.text|length >= 30 %}
+                      {{post.text|truncatechars:50}}
+                    {% else %}
+                      {{post.text}}
+                    {% endif %}
+                  {% endif %}
+                </p>
+                <div>
+                  {% if post.image and post.image != None %}
+                    <img src="{{post.image.url}}" alt="{{post.publisher.name}}-image-post"class="post_img" >
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {% if post.title == '' %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.owner}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.owner.is_verified %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">     
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="search_result">
+              <div class="friend_d">
+                <div class="search_left">
+                  <img src="{{post.publisher.image.url}}" alt="{{post.publisher.username}}">
+                </div>
+                <div class="side_info">
+                  <span>
+                    {% if post.publisher.owner.is_verified %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                        <span class="verify">
+                          v
+                        </span>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% else %}
+                      <p>
+                        <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">
+                          {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}}
+                        </a>
+                      </p>
+                      <small>From {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} board</small>
+                    {% endif %}
+                  </span>
+                  <small>
+                    {% if post.title and post.title != None %}
+                      <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                        <b>Title:</b> {{post.title|truncatechars:50}}
+                      </a>
+                    {% else %}
+                      {% if post.title|length >= 1 %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">           
+                          <b>Title:</b> {{post.title|truncatechars:50}}
+                        </a>
+                      {% else %}
+                        <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                          <b>Post detail</b>
+                        </a>
+                      {% endif %}
+                    {% endif %}
+                  </small>
+                  <p>
+                    {% if post.text and post.text != None %}
+                      {% if post.text|length >= 30 %}
+                        {{post.text|truncatechars:50}}
+                      {% else %}
+                        {{post.text}}
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  <div>
+                    {% if post.image and post.image != None %}
+                      <img src="{{post.image.url}}" alt="{{post.publisher.name}}-image-post"class="post_img" >
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search board post in sakyum search engine</h3>
+      {% else %}
+        <h5 class="no_result">Result not found for <span>{{search_panel}}</span> in board's DB, search sakyum, search your need here!</h5>
+      {% endif %}
+    {% endif %}
+          
+    {% if paginator_board_posts.count > 5 %}
+      <div class="paginator">
+        {% if board_posts_db.has_previous %}
+          <a href="?page={{board_posts_db.previous_page_number}}&search_txt={{search_panel}}" class="page_surf">Next board post result</a>
+        {% endif %}
+
+        {% if board_posts_db.has_next %}
+          <a href="?page={{board_posts_db.next_page_number}}&search_txt={{search_panel}}" class="page_surf">Previous board post result</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="zone_result">
+    {% if zones_db %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search a zone in sakyum search engine</h3>
+      {% else %}
+        <h5 class="result_note">Your <span>{{search_panel}}</span> search that matches zone</h5>
+      {% endif %}
+
+      {% for zone in zones_db %}
+        <div class="search_result">
+          <div class="friend_d">
+            <div class="search_left">
+              <img src="{{zone.image.url}}" alt="">
+            </div>
+            <div class="side_info">
+              <span>
+                <p>
+                  <a href="{% url 'zone_detail' zone.id request.user %}">
+                    {{zone.name}}
+                  </a>
+                </p>
+              </span>
+              <small>
+                {% if zone.description == None %}
+                {% else %}
+                  {% if zone.description == '' %}
+                  {% else %}
+                    Zone description: {{zone.description}}
+                  {% endif %}
+                {% endif %}
+              </small>
+              <div class="friend_div">
+                {% if request.user not in zone.members.all %}
+                  <a href="{% url 'join_zone' zone.id %}" class="peace"><p>Join zone</p></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% if search_panel == None %}
+        <h3 class="result_note">Search zone in sakyum search engine</h3>
+      {% else %}
+        <h5 class="no_result">Result not found for <span>{{search_panel}}</span> in zone DB, search sakyum, search your need here!</h5>
+      {% endif %}
+    {% endif %}
+          
+    {% if paginator_zones.count > 5 %}
+      <div class="paginator">
+        {% if zones_db.has_previous %}
+          <a href="?page={{zones_db.previous_page_number}}&search_txt={{search_panel}}" class="page_surf">Next result page</a>
+        {% endif %}
+
+        {% if zones_db.has_next %}
+          <a href="?page={{zones_db.next_page_number}}&search_txt={{search_panel}}" class="page_surf">Previous result page</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock main %}

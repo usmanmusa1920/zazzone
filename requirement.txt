@@ -1,0 +1,8 @@
+asgiref==3.5.0
+backports.zoneinfo==0.2.1
+Django==4.0.2
+django-countries==7.2.1
+django-phonenumber-field==6.1.0
+phonenumbers==8.12.43
+Pillow==9.0.1
+sqlparse==0.4.2

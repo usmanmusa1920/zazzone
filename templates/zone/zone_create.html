@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/zone_create.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  Create a zone
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Create new zone</h1>
+    <a href="{% url 'zone_home' request.user %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <input type="text" name="name" placeholder="Zone name" required>
+      {% if form.name.errors %}
+        <div class="error">{{form.name.errors}}</div>
+      {% endif %}
+      <textarea name="description" placeholder="Keep your zone description here!" cols="30" maxlength="100" rows="15"></textarea>
+      {% if form.description.errors %}
+        <div class="error">{{form.description.errors}}</div>
+      {% endif %}
+
+      <div class="zone_custom">
+        <!-- This is where the innerHTML input attribute will be place after clicking over the other radio input -->
+        {% if form.zone_type.errors %}
+          <div class="error">{{form.zone_type.errors}}</div>
+        {% endif %}
+      </div>
+
+      <span class="zone_span">Choose a zone type:</span>
+      
+      <div id="id_zone_type">
+        <div>
+          <label for="id_zone_type_0">
+            <input type="radio" name="zone_type" id="id_zone_type_0" value="business" onclick="hideCustomZoneNameField()" required>
+            Business
+          </label>
+        </div>
+
+        <div>
+          <label for="id_zone_type_1">
+            <input type="radio" name="zone_type" id="id_zone_type_1" value="public" onclick="hideCustomZoneNameField()" required>
+            Public
+          </label>
+        </div>
+
+        <div>
+          <label for="id_zone_type_2">
+            <input type="radio" name="zone_type" id="id_zone_type_2" value="school" onclick="hideCustomZoneNameField()" required>
+            School
+          </label>
+        </div>
+
+        <div>
+          <label for="id_zone_type_3">
+            <input type="radio" name="zone_type" id="id_zone_type_3" value="family" onclick="hideCustomZoneNameField()" required>
+            Family
+          </label>
+        </div>
+
+        <div>
+          <label for="id_zone_type_4">
+            <input type="radio" name="zone_type" id="id_zone_type_4" value="other" onclick="showCustomZoneNameField()" required>
+            Other
+          </label>
+        </div>
+      </div>
+      
+      <br>
+      <button type="submit">Create zone</button>
+    </form>
+  </div>
+{% endblock main %}

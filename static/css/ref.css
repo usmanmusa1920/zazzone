@@ -1,0 +1,122 @@
+body{
+  background-color: lightgrey;
+}
+
+.header{
+  border-bottom: solid black 1px;
+  width: 100%;
+  height: 12vh;
+  top: 0;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: lightgrey;
+}
+
+.main_column_1{
+  display: none;
+}
+
+@media only screen and (max-width: 700px){
+  .header_column{
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-direction: row;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .main_column{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .header_left{
+    width: 100%;
+    border-bottom: none;
+    margin-bottom: 0;
+    justify-content: space-between;
+  }
+}
+
+.main_column_2{
+  background: whitesmoke;
+  border-radius: 7px;
+  width: 100%;
+  margin-bottom: 3px;
+}
+
+.main_column_2:hover{
+  padding-right: 0;
+}
+
+.abt_div{
+  width: calc(100% - 30px);
+  padding: 30px;
+  background: lightgray;
+  margin: 3px;
+  border-radius: 7px;
+}
+
+h5{
+  font-size: 1.5rem;
+  width: 100%;
+  padding: 0 0 0 30px;
+}
+
+.abt_div a{
+  color: black;
+  text-decoration: underline;
+}
+
+.abt_div img{
+  width: 100px;
+  height: auto;
+  border-radius: 12px;
+}
+
+.abt_div form{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: white;
+}
+
+.abt_div form input{
+  border: none;
+  outline: none;
+  background: lightgrey;
+  padding: 7px;
+  height: 30px;
+  margin: 3px 0 3px 0;
+}
+
+.abt_div form textarea{
+  border: none;
+  outline: none;
+  background: lightgrey;
+  padding: 7px;
+  resize: none;
+  margin: 3px 0 3px 0;
+}
+
+.abt_div form button{
+  border: none;
+  outline: none;
+  color: white;
+  background: rgb(3, 3, 55);
+  padding: 7px;
+  height: 30px;
+  margin: 3px 0 3px 0;
+}
+
+.search_user_or_board{
+  display: none;
+}

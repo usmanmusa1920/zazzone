@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+
+{% block title %}
+  {% if request.user == view_user_board.owner %}
+    My board
+  {% else %}
+    {{view_user_board.owner.first_name}} {{view_user_board.owner.last_name}} board
+  {% endif %}
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{view_user_board.owner.board_owner.owner.profile.banner.url}}" alt="">
+  </div>
+
+  <div class="profile_info">
+    <div>
+      <img src="{{view_user_board.owner.board_owner.image.url}}" alt="{{request.user}}">
+      <h1>{{view_user_board.owner.first_name}} {{view_user_board.owner.last_name}} Board</h1>
+      {% if view_user_board.owner.is_verified %}
+        <h1 class="verified">
+          v
+        </h1>
+      {% endif %}
+    </div>
+
+    {% if request.user == view_user_board.owner %}
+      <p class="p_tag">Your board, {{view_user_board.owner.first_name}} {{view_user_board.owner.last_name}} board</p>
+    {% else %}
+      <p class="p_tag">This is {{view_user_board.owner.first_name}} {{view_user_board.owner.last_name}} board</p>
+    {% endif %}
+
+    {% if user_board_posts %}
+      {% if request.user == view_user_board.owner %}
+        <p class="p_tag">
+          <small>You have {{user_board_posts.paginator.count}} post{{user_board_posts.paginator.count|pluralize}} on your board</small>
+        </p>
+      {% endif %}
+    {% endif %}
+
+    <div class="f_div">
+      {% for follower in followers|slice:":2" %}
+        {% if follower == view_user_board.owner %}
+          <!-- pass -->
+        {% else %}
+          <small>
+            <img src="{{follower.image.url}}" alt="{{follower}}">
+            <a href="{% url 'profile_user' follower %}">{{follower.first_name}} {{follower.last_name}}</a>
+          </small>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="f_div">
+      <small>
+        {% if view_user_board.owner.board_owner.followers.count > 0 %}
+          {% if request.user == view_user_board.owner %}
+            You have {{view_user_board.owner.board_owner.followers.all.count}} follower{{view_user_board.owner.board_owner.followers.all.count|pluralize}}
+          {% else %}
+            {{view_user_board.owner.first_name}} have {{view_user_board.owner.board_owner.followers.all.count}} follower{{view_user_board.owner.board_owner.followers.all.count|pluralize}}
+          {% endif %}
+        {% else %}
+          {% if request.user == view_user_board.owner %}
+            You have no follower
+          {% else %}
+            {{view_user_board.owner.first_name}} have no follower
+          {% endif %}
+        {% endif %}
+      </small>
+    </div>
+
+    <div class="update_div">
+      {% if request.user == view_user_board.owner %}
+        <a href="{% url 'gallery_user' view_user_board.owner %}">
+          <b>Your gallery</b>
+        </a>
+        <a href="{% url 'Profile' request.user %}">
+          <b>Profile</b>
+        </a>
+      {% else %}
+        <a href="{% url 'gallery_user' view_user_board.owner %}">
+          <b>{{view_user_board.owner.first_name}} gallery</b>
+        </a>
+        <a href="{% url 'profile_user' view_user_board.owner %}">
+          <b>{{view_user_board.owner.first_name}} {{view_user_board.owner.last_name}} profile</b>
+        </a>
+      {% endif %}
+
+      {% if request.user not in view_user_board.owner.board_owner.followers.all %}
+        {% if request.user == view_user_board.owner %}
+          <a href="{% url 'board:follow_board' view_user_board.owner.id %}">
+            <b>Follow your board</b>
+          </a>
+        {% else %}
+          <a href="{% url 'board:follow_board' view_user_board.owner.id %}">
+            <b>Follow this board</b>
+          </a>
+        {% endif %}
+      {% else %}
+        {% if request.user == view_user_board.owner %}
+          <!-- pass -->
+        {% else %}
+          <a href="{% url 'board:unfollow_board' view_user_board.owner.id %}">
+            <b>Unfollow this board</b>
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    {% if request.user == view_user_board.owner %}
+      <div class="update_div">
+        <a href="{% url 'board_img_update' %}">
+          <b>Edit board image</b>
+        </a>
+        <a href="{% url 'board_info_update' %}">
+          <b>Edit board info</b>
+        </a>
+      </div>
+    {% endif %}
+
+    <div class="sub_head">
+      <div class="sub_head_inn">
+        {% if view_user_board.owner.board_owner.description %}
+          <p class="p_tag">{{view_user_board.owner.board_owner.description}}</p>
+        {%else%}
+          {% if request.user == view_user_board.owner %}
+            <p class="p_tag">Hey {{view_user_board.owner.first_name}}, you have not drop a description on  your board</p>
+          {% else %}
+            {% if view_user_board.owner.gender == 'female' %}
+              <p class="p_tag">{{view_user_board.owner.first_name}} have not keep her board description</p>
+            {% else %}
+              <p class="p_tag">{{view_user_board.owner.first_name}} have not keep his board description</p>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel_div">
+    <a href="{% url 'iratio' view_user_board.owner view_user_board.owner.id %}"><b>iRatio</b></a>
+    {% if request.user == view_user_board.owner %}
+      <a href="{% url 'Profile' view_user_board.owner %}">
+        <b>Go to my profile</b>
+      </a>
+    {% else %}
+      <a href="{% url 'profile_user' view_user_board.owner %}">
+        <b>Go to {{view_user_board.owner.first_name}} profile</b>
+      </a>
+    {% endif %}
+  </div>
+
+  {% if user_board_posts %}
+    {% for post in user_board_posts %}
+      <div class="post">
+        <div class="post_head">
+          <div class="post_head_column">
+            <div class="p_head_1">
+              <div class="p_head_1_img">
+                <img src="{{ post.publisher.image.url }}" alt="">
+              </div>
+              <div class="p_head_1_info">
+                <p>
+                  {{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board
+
+                  {% if post.publisher.owner.is_verified %}
+                  <span class="verfy">
+                    v
+                  </span>
+                {% endif %}
+                </p>
+                <small>{{post.pub_date | date:'F d, Y'}}</small>
+              </div>
+            </div>
+            <div class="p_head_2">
+              <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
+                <img src="{% static 'img/info.jpg' %}" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="post_main">
+          <div class="post_main_column">
+            {% if post.title %}
+              <h1>{{post.title}}</h1>
+            {% endif %}
+
+            {% if post.image %}
+              <div class="post_main_img">
+                <img src="{{post.image.url}}" alt="">
+              </div>
+            {% endif %}
+
+            {% if post.text|length >= 220 %}
+              {% if post.text %}
+                <p>{{post.text|truncatechars:200}}</p>
+                <a class="post_more" href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}"><b>read more</b></a>
+              {% endif %}
+            {% else %}
+              {% if post.text %}
+                <p>{{post.text|truncatechars:200}}</p>
+              {% endif %}
+            {% endif %}
+
+            {% if post.code %}
+              <div class="post_main_snippet">
+                <pre><code>{{post.code}}</code></pre>
+              </div>
+            {% endif %}
+
+            <hr>
+            <small>
+              {% if post.likers.all.count > 1 %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% else %}
+                  {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% endif %}
+              {% else %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like
+                {% else %}
+                  {{post.likers.all.count}} like
+                {% endif %}
+              {% endif %}
+    
+              ,
+              
+              {% if post.comment_set.count == 0 %}
+                {{post.comment_set.count}} comment
+              {% else %}
+                {{post.comment_set.count}} comment{{post.comment_set.count|pluralize}}
+              {% endif %}
+            </small>
+            <div class="post_foot">
+              <div class="post_foot_column">
+                {% if request.user in post.likers.all %}
+                  <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="liked">
+                    {% csrf_token %}
+                    <button type="submit">Liked</button>
+                  </form>
+                {% else %}
+                  <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="post_form_1">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                  </form>
+                {% endif %}
+                <form action="{% url 'board:Board_Detail' post.pk post.publisher.owner %}" method="post" class="post_form_2">
+                  {% csrf_token %}
+                  <img src="{{ request.user.image.url }}" alt="">
+                  <input type="text" name="body" placeholder="Write a comment" required>
+                  <button type="submit">Comment</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    {% endfor %}
+  {% else %}
+    {% if request.user == view_user_board.owner %}
+      <p>{{request.user.first_name}} you have no activity yet, check your
+        <a href="{% url 'board:board' request.user.board_owner.id %}" class="black"><b>Board</b></a> OR 
+        <a href="{% url 'Blog_Create' %}" class="black">create new blog</a>
+        OR
+        <small><a href="{% url 'board:Board_Create' request.user %}" class="black">Add something onyour board</a></small>
+      </p>
+    {% else %}
+      <p>{{view_user_board.owner.first_name}} have no activity yet, check his/her
+        <a href="{% url 'board:board' request.user.board_owner.id %}" class="black"><b>Board</b></a>
+      </p>
+    {% endif %}
+  {% endif %}
+{% endblock main %}
+
+
+{% block pagination %}
+  {% if user_board_posts_count.count > 5 %}
+    <div class="paginator" id="paginator">
+      {% if user_board_posts.has_previous %}
+        {% if user.is_superuser %}
+          <a href="?page=1" class="page_surf">First</a>
+        {% endif %}
+        <a href="?page={{user_board_posts.previous_page_number}}" class="page_surf">Previous</a>
+      {% endif %}
+
+      {% if user.is_superuser %}
+        {% for i in user_board_posts.paginator.page_range %}
+          {% if user_board_posts.number == i %}
+            <a href="?page={{i}}" class="page_current">{{i}}</a>
+          {% elif i > user_board_posts.number|add:'-3' and i < user_board_posts.number|add:'3' %}
+            <a href="?page={{i}}" class="page_num">{{i}}</a>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      
+      {% if user_board_posts.has_next %}
+        <a href="?page={{user_board_posts.next_page_number}}" class="page_surf">Next</a>
+        {% if user.is_superuser %}
+          <a href="?page={{user_board_posts.paginator.num_pages}}" class="page_surf">Last</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock pagination %}

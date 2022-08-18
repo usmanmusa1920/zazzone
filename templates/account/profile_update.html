@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  profile update
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Update your profile</h1>
+    <a href="{% url 'Profile' request.user %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <input type="text" name="first_name" placeholder="{{u_form.instance.first_name}} enter your first name" value="{{u_form.instance.first_name}}" maxlength="70" required>
+      {% if u_form.first_name.errors %}
+        <div class="error">{{u_form.first_name.errors}}</div>
+      {% endif %}
+      <input type="text" name="last_name" placeholder="{{u_form.instance.first_name}} enter your last name" value="{{u_form.instance.last_name}}" maxlength="70" required>
+      {% if u_form.last_name.errors %}
+        <div class="error">{{u_form.last_name.errors}}</div>
+      {% endif %}
+      <input type="email" name="email" placeholder="{{u_form.instance.first_name}} enter your email address" maxlength="70" value="{{u_form.instance.email}}" required>
+      {% if u_form.email.errors %}
+        <div class="error">{{u_form.email.errors}}</div>
+      {% endif %}
+      {% if p_form.instance.bio == None %}
+        <textarea name="bio" placeholder="{{u_form.instance.first_name}} enter your bio here!" cols="30" rows="15" maxlength="100"></textarea>
+      {% else %}
+        <textarea name="bio" placeholder="{{u_form.instance.first_name}} enter your bio here!" cols="30" maxlength="100" rows="15">{{p_form.instance.bio}}</textarea>
+      {% endif %}
+      {% if p_form.bio.errors %}
+        <div class="error">{{p_form.bio.errors}}</div>
+      {% endif %}
+
+      Are you currently studying? {{u_form.is_study_status}}
+      
+      {% if p_form.instance.institution == None %}
+        <input type="text" name="institution" placeholder="{{u_form.instance.first_name}} enter your institution here!" maxlength="70">
+      {% else %}
+        <input type="text" name="institution" placeholder="{{u_form.instance.first_name}} enter your institution here!" maxlength="70" value="{{p_form.instance.institution}}">
+      {% endif %}
+      {% if p_form.institution.errors %}
+        <div class="error">{{p_form.institution.errors}}</div>
+      {% endif %}
+      <br>
+      <button type="submit">Update Info</button>
+    </form>
+  </div>
+{% endblock main %}

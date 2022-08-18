@@ -1,0 +1,168 @@
+.main_column{
+  width: 70%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 700px){
+  .main_column{
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.sub_head{
+  width: 100%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  height: 120px;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+}
+
+@media only screen and (max-width: 700px){
+  .sub_head{
+    padding-top: 20px;
+    height: auto;
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
+.sub_head img{
+  width: 100px;
+  height: 100px;
+  margin-left: 20px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.sub_head h1{
+  color: rgb(3, 3, 55);
+  margin-left: 20px;
+}
+
+.sub_head a{
+  margin-left: 3px;
+  color: darkgreen;
+  text-decoration: underline;
+}
+
+.form_div{
+  width: 100%;
+  display: flex;
+  margin-bottom: 14px;
+  justify-content: center;
+  background-color: lightgray;
+}
+
+.form{
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.form input{
+  border: none;
+  outline: none;
+  margin-bottom: 3px;
+  padding-left: 7px;
+  line-height: 30px;
+}
+  
+.error{
+  width: 100%;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  color: white;
+  background-color: red;
+  border-radius: 3px;
+}
+
+.form textarea{
+  border: none;
+  outline: none;
+  margin-bottom: 3px;
+  padding: 7px;
+  resize: none;
+}
+
+.privacy_div{
+  background-color: rgb(238, 234, 178);
+  margin-bottom: 5px;
+  padding-left: 7px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.img_div{
+  background-color: rgb(238, 234, 178);
+  margin-bottom: 5px;
+  padding-left: 7px;
+  min-height: 70px;
+}
+
+.profile_img{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile_img img{
+  width: 80%;
+  height: auto;
+  border-radius: 3px;
+}
+
+.form button{
+  border: none;
+  width: 40%;
+  height: 30px;
+  font-size: large;
+  color: white;
+  background-color: green;
+}
+
+/* The following are mostly for new post */
+
+.show_code_field{
+  margin-top: 5px;
+  border-radius: 3px;
+  width: fit-content;
+  background: grey;
+  color: white;
+  padding: 3px;
+}
+
+.hide_code_field{
+  display: none;
+  width: fit-content;
+}
+
+.code{
+  display: none;
+  border: none;
+  outline: none;
+  margin-top: 5px;
+  resize: none;
+  padding-left: 5px;
+}
+
+.label_img{
+  color: brown;
+  margin-top: 5px;
+}
+/* end */
+
+.search_user_or_board{
+  display: none;
+}

@@ -1,0 +1,292 @@
+body{
+  background-color: lightgrey;
+}
+
+.header{
+  border-bottom: solid black 1px;
+  width: 100%;
+  height: 12vh;
+  top: 0;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: lightgrey;
+}
+
+@media only screen and (max-width: 700px){
+  .header_column{
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-direction: row;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .main_column{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .header_left{
+    width: 100%;
+    border-bottom: none;
+    margin-bottom: 0;
+    justify-content: space-between;
+  }
+}
+
+.main_column_1{
+  width: 50%;
+  height: 87vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+}
+
+.main_column_2:hover{
+  padding-right: 0;
+}
+
+@media only screen and (max-width: 700px){
+  .main_column_1{
+    display: none;
+  }
+}
+
+.welcome_info{
+  color: rgb(5, 5, 33);
+  font-style: italic;
+  font-family: cursive;
+  font-size: larger;
+  margin-bottom: 15px;
+}
+
+.A{
+  width: 400px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  margin-bottom: 15px;
+}
+
+.B{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.C{
+  color: rgb(5, 5, 33);
+  font-size: 3rem;
+}
+
+.ref{
+  color: rgb(5, 5, 33);
+  font-size: larger;
+}
+
+.ref_bot{
+  position: fixed;
+  bottom: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 3px;
+}
+
+.ref_bot p{
+  color: rgb(5, 5, 33);
+  font-size: larger;
+  margin-bottom: 10px;
+}
+
+.small_link a{
+  color: black;
+  text-decoration: underline;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.main_column_2{
+  width: 45%;
+  height: 87vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 700px){
+  .main_column_2{
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.login_form{
+  min-height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main_column_2 form{
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  height: auto;
+}
+
+.un_info{
+  width: 100%;
+}
+
+.un_info h2{
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.un_info p{
+  margin-bottom: 10px;
+}
+  
+.error{
+  width: 100%;
+  margin-top: 3px;
+  padding: 3px;
+  margin-bottom: 3px;
+  color: white;
+  background-color: red;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+}
+
+.input{
+  border: none;
+  outline: none;
+  height: 30px;
+  width: 100%;
+  padding: 5px;
+  margin: 3px;
+  background: lightgrey;
+}
+
+.radio{
+  width: 100%;
+  display: flex;
+}
+
+.radio input{
+  border: none;
+  outline: none;
+  padding: 5px;
+  margin: 3px;
+}
+
+.calender{
+  width: 100%;
+  display: flex;
+}
+
+.calender input{
+  border: none;
+  outline: none;
+  height: 30px;
+  padding: 5px;
+  margin: 3px;
+  background: lightgrey;
+}
+
+.select{
+  width: 100%;
+  display: flex;
+}
+
+#id_country{
+  width: 70%;
+  border: none;
+  outline: none;
+  height: 30px;
+  padding: 5px;
+  margin: 3px;
+}
+
+.select img{
+  width: 30px;
+  height: 20px;
+}
+
+.main_column_2 form button{
+  border: none;
+  border-radius: 5px;
+  text-align: center;
+  background: green;
+  margin: 3px;
+  height: 30px;
+  width: 50%;
+  color: white;
+}
+
+.main_column_2 form p a{
+  color: darkgreen;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ref_bot_2{
+  display: none;
+}
+
+@media only screen and (max-width: 700px){
+
+  .ref_bot_2{
+    bottom: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 3px;
+    margin-top: 5px;
+  }
+  
+  .ref_bot_2 p{
+    color: rgb(5, 5, 33);
+    margin-top: 10px;
+  }
+
+  .small_link_2{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .small_link_2 a{
+    color: black;
+    text-decoration: underline;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+}

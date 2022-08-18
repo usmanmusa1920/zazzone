@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/chat.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  chat room
+{% endblock title %}
+
+{% block main %}
+  <div class="profile_info">
+    <h1>
+      <img src="{{friend.image.url}}" alt="{{friend.username}}-profile-image">
+      <a href="{% url 'profile_user' friend %}">
+        {{friend.first_name}} {{friend.last_name}}
+      </a>
+    </h1>
+    <small>
+      You and {{friend.first_name}} chat room
+    </small>
+  </div>
+
+  <div class="wrap">
+
+    <form method="POST" class="com_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Write a message to {{friend.first_name}}" class="comment_area">
+      <input type="file" name="image" placeholder="Image" accept="image/*" class="msg_img">
+      <button type="submit">Send</button>
+    </form>
+
+    <div class="comments">
+      {% if message %}
+        {% for msg in message %}
+        
+          <!-- sender -->
+          {% if msg.from_sender == request.user and msg.to_receiver == friend %}
+            {% if msg.from_sender == request.user %}
+              <div class="sender">
+                <div class="sender_inn">
+                  <div>
+                    <small class="m_date">{{msg.timestamp}}</small>
+                    {% if msg.is_view %}
+                      <small class="is_read">Seen</small>
+                    {% else %}
+                      <small class="not_read">Not seen</small>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if msg.message %}
+                  <p>{{msg.message}}</p>
+                {% endif %}
+                {% if msg.image %}
+                  <img src="{{msg.image.url}}" alt="" class="img_msg">
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+
+          <!-- receiver -->
+          {% if msg.from_sender == friend and msg.to_receiver == request.user %}
+            {% if msg.from_sender == friend %}
+              <div class="receiver">
+                <div class="receiver_inn">
+                  <a href="{% url 'profile_user' msg.from_sender %}">
+                    <img src="{{msg.from_sender.image.url}}" alt="" class="com_img">
+                  </a>
+                  <div>
+                    <a href="{% url 'profile_user' msg.from_sender %}"><b>{{msg.from_sender.first_name}} {{msg.from_sender.last_name}}</b></a>
+                    <small class="m_date">{{msg.timestamp}}</small>
+                    {% if msg.is_view %}
+                      <small class="is_read">You read</small>
+                    {% else %}
+                      <!-- Even though that this else  condition it will be hardly for a user to see it, but any where we include it just for fun.Because whenever a user click on a message that was sent to him/her the is_view will change from False to True -->
+                      <small class="not_read">Please read me</small>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if msg.message %}
+                  <p>{{msg.message}}</p>
+                {% endif %}
+                {% if msg.image %}
+                  <img src="{{msg.image.url}}" alt="" class="img_msg">
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+          
+        {% endfor %}
+      {% else %}
+        <div class="chat_note">
+          <h3>
+            Hi {{request.user.first_name | upper}} start conversation with {{friend.first_name|upper}}
+          </h3>
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="paginator">
+      {% if message.has_previous %}
+        <a href="?page={{message.previous_page_number}}" class="page_surf">Recent messages</a>
+      {% endif %}
+
+      {% if message.has_next %}
+        <a href="?page={{message.next_page_number}}" class="page_surf">Previous messages</a>
+      {% endif %}
+    </div>
+
+    <form method="POST" class="com_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Write a message to {{friend.first_name}}" class="comment_area">
+      <input type="file" name="image" placeholder="Image" accept="image/*" class="msg_img">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+{% endblock main %}

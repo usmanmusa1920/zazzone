@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  privacy update
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-img">
+    <h1>Make some privacy</h1>
+    <a href="{% url 'Profile' request.user %}">Back</a>
+  </div>
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="privacy_div">
+        <span>Hide phone number:</span> {{form.is_num_encrypt}}
+      </div>
+      <div class="privacy_div">
+        <span>Hide email:</span> {{form.is_email_encrypt}}
+      </div>
+      <div class="privacy_div">
+        <span>Hide date of birth:</span> {{form.is_dob_encrypt}}
+      </div>
+
+      <br>
+      <button type="submit">Update privacy</button>
+    </form>
+  </div>
+{% endblock main %}

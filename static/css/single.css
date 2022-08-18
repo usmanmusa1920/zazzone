@@ -1,0 +1,279 @@
+.main_column{
+  width: 70%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 700px){
+  .main_column{
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.sub_head{
+  width: 100%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  height: 120px;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.sub_head img{
+  width: 100px;
+  height: 100px;
+  margin-left: 20px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.sub_head h1{
+  color: rgb(3, 3, 55);
+  margin-left: 20px;
+}
+
+.sub_head a{
+  margin-left: 3px;
+  color: darkgreen;
+  text-decoration: underline;
+}
+
+@media only screen and (max-width: 700px){
+  .sub_head{
+    padding-top: 20px;
+    height: auto;
+    justify-content: center;
+    flex-direction: column;
+  }
+}
+
+.sub_head img{
+  width: 100px;
+  height: 100px;
+  margin-left: 20px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.down_head{
+  width: 90%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+  padding-left: 20px;
+}
+
+.del_form{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+.del_form button{
+  border: none;
+  border-radius: 3px;
+  width: 40%;
+  font-size: large;
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+.search_user_or_board{
+  display: none;
+}
+
+.bottom{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+}
+
+.del_btn{
+  border: none;
+  border-radius: 3px;
+  width: 40%;
+  height: 30px;
+  font-size: large;
+  color: white;
+  background-color: red;
+}
+
+.bottom div{
+  width: 40%;
+  height: 30px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cancel_link{
+  width: 40%;
+  border: 2px solid darkgreen;
+  border-radius: 3px;
+  background-color: white;
+  color: darkgreen;
+}
+
+.post_bottom{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.com_info{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: lightgray;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 5px;
+  margin-bottom: 25px;
+  border-radius: 5px;
+  width: 95%;
+  height: 30px;
+}
+
+.com_btn_panel{
+  color: black;
+  background-color: white;
+  padding: 3px;
+  border-radius: 3px;
+  text-align: center;
+  /* width: 50%; */
+  margin-right: 12px;
+}
+
+.extra{
+  color: black;
+  padding: 3px;
+  border-radius: 3px;
+  text-align: center;
+  /* width: 50%; */
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra img{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.comments{
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.com_div{
+  width: 95%;
+  margin-left: 2%;
+  margin-right: 3%;
+  padding: 5px;
+  margin-bottom: 7px;
+  border-radius: 7px;
+  display: flex;
+  background-color: lightgray;
+}
+
+.left_com{
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left_com img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.right_com{
+  width: calc(100% - 55px);
+  margin-left: 5px;
+}
+
+.com_name{
+  margin-top: 1px;
+  color: rgb(3, 3, 55);
+}
+
+.com_name small{
+  color: green;
+}
+
+.com_body{
+  background: white;
+  padding: 3px;
+  border-radius: 3px;
+  overflow: auto;
+  font-size: large;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.h3_no{
+  color: grey;
+  border-top: 3px solid black;
+}
+
+.com_form{
+  width: 47%;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 5px;
+  position: fixed;
+  background-color: grey;
+}
+
+.com_form img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.com_form input{
+  width: 70%;
+  border: none;
+  outline: none;
+  height: 30px;
+  margin-right: 3px;
+  padding-left: 20px;
+  border-radius: 9px;
+  border: solid 1px lightgray;
+}
+
+.com_btn{
+  width: 70px;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  background: white;
+}

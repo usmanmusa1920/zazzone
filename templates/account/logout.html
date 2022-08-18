@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock css %}
+
+{% block title %}
+  logout
+{% endblock title %}
+
+{% block link %}
+  <a></a>
+  <a href="{% url 'signup' %}">Sign Up</a>
+{% endblock link %}
+
+{% block main_left %}
+    <p class="welcome_info">Join the community everywhere every time!</p>
+    <div class="A">
+      <div class="B">
+        <h1 class="C">Zazzone</h1>
+      </div>
+    </div>
+    <p class="ref">
+      <b>Zazzone</b> help you to explore/connect with people around you, <br />
+      And find out more in Zazzone @ {{the_year}} and on! <br>
+      Usman Musa production
+    </p>
+    <div class="ref_bot">
+      <p>All right reserved <b>Zazzone &copy; {{the_year}}</b></p>
+      <small class="small_link">
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'privacy' %}">Privacy</a>
+      </small>
+    </div>
+{% endblock main_left %}
+
+{% block main %}
+    <form method="post">
+      <div class="un_info">
+        <h2>You logged out</h2>
+        <p>Login back to your account now!</p>
+      </div>
+      <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+      <br>
+      <p>--- OR ---</p>
+      <br>
+      <p>New account <a href="{% url 'signup' %}">Sign Up</a></p>
+    </form>
+    <div class="ref_bot_2">
+      <p>All right reserved <b>Zazzone &copy; {{the_year}}</b></p>
+      <small class="small_link_2">
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'privacy' %}">Privacy</a>
+      </small>
+    </div>
+{% endblock main %}

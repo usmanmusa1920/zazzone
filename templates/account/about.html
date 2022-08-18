@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/ref.css' %}">
+{% endblock css %}
+
+{% block title %}
+  About
+{% endblock title %}
+{% block link %}
+  <a></a>
+  <a href="{% url 'login' %}">Login</a>
+{% endblock link %}
+
+{% block main %}
+  <br>
+  <h5>About</h5>
+  <div class="abt_div">
+    <p><b>Zazzone</b> is an online platform that let you connect with friends, and enable people to collaborate, find and figure out a way out about their projects.</p>
+    <p>Like wise it help to make connection with other people like developers, your family and friends</p>
+  </div>
+  <br>
+
+
+  <h5 id="contact_page">Contact us</h5>
+  <div class="abt_div">
+    <p>You can deliver your tought and what you feel about us here, and we will review at the earliest.</p>
+    <form action="{% url 'about' %}" method="post">
+      {% csrf_token %}
+      {% if request.user.is_authenticated %}
+        <input type="text" name="full_name" placeholder="Your full name" value="{{request.user.first_name}} {{request.user.last_name}}" required>
+        <input type="text" name="email" placeholder="Email address" value="{{request.user.email}}" required>
+      {% else %}
+        <input type="text" name="full_name" placeholder="Your full name" required>
+        <input type="text" name="email" placeholder="Email address" required>
+      {% endif %}
+      <textarea name="text_body" placeholder="Type message" cols="30" rows="10" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <br>
+
+  {% if request.user.is_authenticated %}
+    {% if request.user.is_superuser == True %}
+      {% if messages_us %}
+        <h5>Messages</h5>
+        {% for msg in messages_us %}
+          <div class="abt_div">
+            <p>
+              <a href="{% url 'mark_message_us' msg.id %}">Mark as read</a>
+              <a href="{% url 'delete_message_us' msg.id %}">Delete message</a>
+            </p>
+            <br>
+            <p><b>Is our user: </b>{{msg.is_client}}</p>
+            <br>
+            <p><b>Date: </b>{{msg.timestamp}}</p>
+            <p><b>Full name: </b>{{msg.full_name}}</p>
+            <p><b>Email: </b>{{msg.email}}</p>
+            <p><b>Body: </b>{{msg.text_body}}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="abt_div">
+          <h1>No new message(s)</h1>
+        </div>
+      {% endif %}
+
+
+
+      {% if messages_us.paginator.count > 10 %}
+        <div class="paginator">
+          {% if messages_us.has_previous %}
+            <a href="?page={{messages_us.previous_page_number}}" class="page_surf"><h3>Previous</h3></a>
+            <a>...</a>
+          {% endif %}
+          {% for num in messages_us.paginator.page_range %}
+            {% if messages_us.number == num %}
+              <a href="?page={{num}}" class="page_current"><h3>{{num}}</h3></a>
+            {% elif num > messages_us.number|add:'-4' and num < messages_us.number|add:'4' %}
+              <a href="?page={{num}}" class="page_number"><h3>{{num}}</h3></a>
+            {% endif %}
+          {% endfor %}
+          {% if messages_us.has_next %}
+            <a>...</a>
+            <a href="?page={{messages_us.next_page_number}}" class="page_surf"><h3>Next</h3></a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% endif %}
+  {% endif %}
+
+  <h5 id="privacy_page">Privacy</h5>
+  <div class="abt_div">
+    <p>Pivacy is the number one concern of every online activity nowadays, Zazzone was built with a very good and dedicated encryption and hashed environment, to make sure that your data and other sensitive information is safe, not breached out to the public</p>
+  </div>
+  <br>
+
+
+  <h5>Contributors:</h5>
+  <div class="abt_div">
+    <h5><a href="/Shehu/profile">Usman Musa</a></h5>
+    <img src="{% static 'img/default_user.png' %}" alt="">
+    <p>
+      <i>The founder, server and back end splash</i>
+    </p>
+  </div>
+
+  <div class="abt_div">
+    <h5><a href="/Shehu/profile">The client side</a></h5>
+    <img src="{% static 'img/default_user.png' %}" alt="">
+    <p>
+      <i>The client, client and education splash</i>
+    </p>
+  </div>
+
+  <div class="abt_div">
+    <h5><a href="/Shehu/profile">Our designer</a></h5>
+    <img src="{% static 'img/default_user.png' %}" alt="">
+    <p>
+      <i>The designer, designer and wireframe splash</i>
+    </p>
+  </div>
+  <br>
+{% endblock main %}

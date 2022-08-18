@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+{% block title %}
+  {% if request.user == view_user %}
+    my profile
+  {% else %}
+    {{view_user.first_name}} profile
+  {% endif %}
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{view_user.profile.banner.url}}" alt="">
+  </div>
+
+  <div class="profile_info">
+    <div>
+      <img src="{{view_user.image.url}}" alt="{{view_user}}">
+      <h1>{{view_user.first_name}} {{view_user.last_name}}</h1>
+      {% if view_user.is_verified %}
+        <h1 class="verified">
+          v
+        </h1>
+      {% endif %}
+      </div>
+
+    <p class="p_tag">
+      From {{view_user.country.name}} ({{view_user.country}}) &nbsp; <img src="{{view_user.country.flag}}" alt=""> &nbsp; Joined {{view_user.date_joined | date:'F, Y'}}
+    </p>
+
+    <p class="p_tag">
+      Gender: {{view_user.gender}}
+      {% if view_user.is_dob_encrypt %}
+        <!-- pass -->
+      {% else %}
+        , born on: {{view_user.date_of_birth}}
+      {% endif %}
+    </p>
+
+    {% if view_user.is_num_encrypt %}
+      <!-- pass -->
+    {% else %}
+      <p class="p_tag">
+        <img src="{% static 'img/phone.png' %}" alt="mobile_number" class="p_tag_img">
+        &nbsp; {{inter_num}}
+      </p>
+    {% endif %}
+    {% if view_user.is_email_encrypt %}
+      <!-- pass -->
+    {% else %}
+      <p class="p_tag">
+        <img src="{% static 'img/link.png' %}" alt="email" class="p_tag_img"> &nbsp; {{view_user.email}}
+      </p>
+    {% endif %}
+    <br>
+
+    {% if posts %}
+      <p class="p_tag">
+        <small>{{view_user.first_name}} you have {{page_obj.paginator.count}} post{{page_obj.paginator.count|pluralize}}</small>
+      </p>
+    {% endif %}
+
+    {% if view_user.friends %}
+      <div class="f_div">
+        {% for friend in view_user_friends|slice:":2" %}
+          {% if friend == view_user %}
+            <!-- pass -->
+          {% else %}
+            <small>
+              <img src="{{friend.image.url}}" alt="{{friend}}" class="p_tag_img">
+              <a href="{% url 'profile_user' friend %}">{{friend.first_name}} {{friend.last_name}}</a>
+            </small>
+          {% endif %}
+        {% endfor %} &nbsp; &nbsp;
+        <small>
+          {% if view_user.friends.all.count > 1 %}
+            {{view_user.friends.all.count}} friend{{view_user.friends.all.count|pluralize}}
+          {% else %}
+            {{view_user.first_name}} need your friendship
+          {% endif %}
+        </small>
+      </div>
+    {% endif %}
+
+    {% if view_user.followers.count > 0 %}
+      <div class="f_div">
+        <small>
+          <img src="{{view_user_last_follower.board_owner.image.url}}" alt="{{follower}}">
+          <a href="{% url 'board:board' view_user_last_follower.board_owner.id %}">{{view_user_last_follower.first_name}} {{view_user_last_follower.last_name}}</a>
+        </small>
+
+        <small>
+          {% if view_user_followers.count > 0 %}
+            You have {{view_user_followers.all.count}} follower{{view_user_followers.all.count|pluralize}}
+          {% else %}
+            {{view_user.first_name}} you need more followers
+          {% endif %}
+        </small>
+      </div>
+    {% else %}
+      <div class="f_div">
+        <small>
+          You have no follower
+        </small>
+      </div>
+    {% endif %}
+
+    {% if view_user.profile.bio %}
+      <p class="user_bio">{{view_user.profile.bio}}</p>
+    {% endif %}
+
+    {% for req in friend_req_to_accept %}
+      <div class="update_div">
+        <a href="{% url 'friend_request_accept' req.id %}" class="g_m"><b>Accept friend request</b></a>
+        <a href="{% url 'decline_request' req.id %}" class="b_m"><b>Decline friend request</b></a>
+      </div>
+    {% endfor %}
+
+    {% for req in friend_req_to_cancel %}
+      <div class="update_div">
+        <a href="{% url 'friend_request_accept' req.id %}" class="b_m"><b>Cancel friend request</b></a>
+      </div>
+    {% endfor %}
+
+    {% if request.user == view_user %}
+      <div class="update_div" id="update_div">
+        <a href="{% url 'profile_update' %}"><b>Edit profile</b></a>
+        <a href="{% url 'image_update' %}"><b>Update profile image</b></a>
+        <a href="{% url 'banner_update' %}"><b>Update banner image</b></a>
+        <a href="{% url  'privacy_page' %}"><b>Privacy</b></a>
+      </div>
+    {% endif %}
+
+      {% if request.user ==  view_user %}
+        <div class="update_div">
+          <a><b class="g_m">This is what people see if they view your profile</b></a>
+        </div>
+      {% else %}
+        <div class="update_div">
+          <a href="{% url 'send_message' view_user.id %}" class="g_m"><b>Send message to {{view_user.first_name}}</b></a>
+          {% if request.user in view_user.friends.all %}
+            <a href="{% url 'friend_remove' view_user.id %}" class="b_m"><b>Unfriend {{view_user.first_name}}</b></a>
+          {% else %}
+            <a href="{% url 'friend_request' view_user.id %}" class="g_m"><b>Add friend</b></a>
+          {% endif %}
+        </div>
+      {% endif %}
+      
+      <div class="sub_head">
+        <div class="sub_head_inn">
+          {% if not view_user.profile.bio %}
+            {% if view_user.gender == 'female' %}
+              <p>{{view_user.first_name}} have not drop her bio</p>
+            {% else %}
+              <p>{{view_user.first_name}} have not drop his bio</p>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="sub_head">
+        <div class="sub_head_inn">
+          {% if view_user.profile.institution %}
+            {% if view_user.is_study_status %}
+              <p>{{view_user.first_name}} currently is studying in {{view_user.profile.institution}}</p>
+            {% else %}
+              <p>{{view_user.first_name}} went to {{view_user.profile.institution}}</p>
+            {% endif %}
+          {% else %}
+            {% if view_user.gender == 'female' %}
+              <p>Hey, {{view_user.first_name}} have not drop her institution</p>
+            {% else %}
+              <p>Hey, {{view_user.first_name}} have not drop his institution</p>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+  </div>
+
+  <div class="panel_div">
+    <a href="{% url 'board:board' view_user.board_owner.id %}"><b>{{view_user.first_name}} board</b></a>
+    <a href="{% url 'iratio' view_user view_user.id %}"><b>{{view_user.first_name}} iRatio</b></a>
+    <a href="{% url 'gallery_user' view_user.username %}"><b>{{view_user.first_name}} gallery</b></a>
+  </div>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post">
+        <div class="post_head">
+          <div class="post_head_column">
+            <div class="p_head_1">
+              <div class="p_head_1_img">
+                <img src="{{ post.publisher.image.url }}" alt="">
+              </div>
+              <div class="p_head_1_info">
+                <p><a>{{post.publisher.first_name}} {{post.publisher.last_name}}</a></p>
+                <small>{{post.pub_date | date:'F d, Y'}}</small>
+              </div>
+            </div>
+            <div class="p_head_2">
+              <a href="{% url 'Blog_Detail' post.pk %}">
+                <img src="{% static 'img/info.jpg' %}" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="post_main">
+          <div class="post_main_column">
+            {% if post.title %}
+              <h1>{{post.title}}</h1>
+            {% endif %}
+            {% if post.image %}
+              <div class="post_main_img">
+                <img src="{{post.image.url}}" alt="">
+              </div>
+            {% endif %}
+
+            {% if post.text|length >= 220 %}
+              {% if post.text %}
+                <p>
+                  {{post.text|truncatechars:200}}
+                  <a class="post_more" href="{% url 'Blog_Detail' post.pk %}"><b>read more</b></a>
+                </p>
+              {% endif %}
+            {% else %}
+              {% if post.text %}
+                <p>
+                  {{post.text}}
+                </p>
+              {% endif %}
+            {% endif %}
+            {% if post.code %}
+              <div class="post_main_snippet">
+                <pre><code>{{post.code}}</code></pre>
+              </div>
+            {% endif %}
+            <hr>
+            <small>
+              {% if post.likers.all.count > 1 %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% else %}
+                  {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% endif %}
+              {% else %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like
+                {% else %}
+                  {{post.likers.all.count}} like
+                {% endif %}
+              {% endif %}
+    
+              ,
+              
+              {% if post.comment_set.count == 0 %}
+                {{post.comment_set.count}} comment
+              {% else %}
+                {{post.comment_set.count}} comment{{post.comment_set.count|pluralize}}
+              {% endif %}
+            </small>
+            <div class="post_foot">
+              <div class="post_foot_column">
+                {% if request.user in post.likers.all %}
+                  <form action="{% url 'blog_like' post.pk %}" method="post" class="liked">
+                    {% csrf_token %}
+                    <button type="submit">Liked</button>
+                  </form>
+                {% else %}
+                  <form action="{% url 'blog_like' post.pk %}" method="post" class="post_form_1">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                  </form>
+                {% endif %}
+                <form action="{% url 'Blog_Detail' post.pk %}" method="post" class="post_form_2">
+                  <img src="{{ request.user.image.url }}" alt="">
+                  <input type="text" name="" placeholder="Write a comment" required>
+                  <button type="submit">Comment</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock main %}
+
+{% block pagination %}
+  {% if posts %}
+    <div class="paginator" id="paginator">
+      {% if posts.has_previous %}
+        {% if request.user == view_user %}
+          <a href="?page=1" class="page_surf">First</a>
+        {% endif %}
+        <a href="?page={{posts.previous_page_number}}" class="page_surf">Previous</a>
+      {% endif %}
+
+      {% for i in posts.paginator.page_range %}
+        {% if posts.number == i %}
+          <a href="?page={{i}}" class="page_current">{{i}}</a>
+        {% elif i > posts.number|add:'-3' and i < posts.number|add:'3' %}
+          <a href="?page={{i}}" class="page_num">{{i}}</a>
+        {% endif %}
+      {% endfor %}
+      
+      {% if posts.has_next %}
+        <a href="?page={{posts.next_page_number}}" class="page_surf">Next</a>
+        {% if request.user == view_user %}
+          <a href="?page={{posts.paginator.num_pages}}" class="page_surf">Last</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% else %}
+    {% if view_user.gender == 'female' %}
+      <h1>{{view_user.first_name}} have no activity yet, check her
+        <a href="{% url 'board:board' view_user.board_owner.id %}"><b>Board</b></a>
+      </h1>
+    {% else %}
+      <h1>{{view_user.first_name}} have no activity yet, check his
+        <a href="{% url 'board:board' view_user.board_owner.id %}"><b>Board</b></a>
+      </h1>
+    {% endif %}
+  {% endif %}
+{% endblock pagination %}

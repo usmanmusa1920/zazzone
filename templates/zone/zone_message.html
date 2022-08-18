@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/chat.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  {% if zone.zone_type == 'public' %}
+    {{zone.name}} {{zone.zone_type}} zone room
+  {% elif zone.zone_type == 'business' %}
+    {{zone.name}} {{zone.zone_type}} zone room
+  {% elif zone.zone_type == 'school' %}
+    {{zone.name}} {{zone.zone_type}} zone room
+  {% elif zone.zone_type == 'family' %}
+    {{zone.name}} {{zone.zone_type}} zone room
+  {% else %}
+    {{zone.name}} {{zone.custom_type}} zone room
+  {% endif %}
+{% endblock title %}
+
+{% block main %}
+  <h2 class="no_result">
+    <button type="button" onmouseover="loaddoc()">Mouse me</button>
+  </h2>
+
+  <script>
+    function loaddoc(){
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function (){
+        if (this.readyState == 4 && this.status == 200){
+          // document.getElementById("com").innerHTML = this.getResponseHeader('content-length');
+          document.getElementById("msgs").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "/1/zone_message", true);
+      xhttp.send();
+    }
+  </script>
+
+  <div id="msgs">
+    <!-- mouse over apply here -->
+  </div>
+
+  <div class="profile_info">
+    <h1>
+      <img src="{{zone.image.url}}" alt="{{zone.name}}-profile-image">
+      <a href="{% url 'zone_detail' zone.id request.user %}">
+        {{zone.name}} zone
+      </a>
+    </h1>
+  </div>
+
+  <div class="zone_messages">
+    <form method="POST" class="com_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Write a message" class="comment_body">
+      <input type="file" name="image" placeholder="Image" accept="image/*">
+      <button type="submit" class="com_btn">Send</button>
+    </form>
+
+    <div class="messages">
+      {% if message %}
+        {% for msg in message %}
+        {% if zone.id == msg.zone.id %}
+          {% if msg.zone_sender == request.user %}
+
+            <div class="sender">
+              <div class="sender_inn">
+                <div>
+                  <small class="m_date">{{msg.timestamp}}</small>
+                  {% if msg.is_view %}
+                    <small class="is_read">Seen</small>
+                  {% else %}
+                    <small class="not_read">Not seen</small>
+                  {% endif %}
+                </div>
+              </div>
+              {% if msg.message %}
+                <p>{{msg.message}}</p>
+              {% endif %}
+              {% if msg.image %}
+                <img src="{{msg.image.url}}" alt="" class="img_msg">
+              {% endif %}
+            </div>
+
+          {% else %}
+            <div class="receiver">
+              <div class="receiver_inn">
+                <a href="{% url 'profile_user' msg.zone_sender %}"><img src="{{msg.zone_sender.image.url}}" alt="" class="com_img"></a>
+                <div>
+                  <b>{{msg.zone_sender.first_name}} {{msg.zone_sender.last_name}}</b>
+                  <small class="m_date">{{msg.timestamp}}</small>
+                  {% if msg.is_view %}
+                    <small class="is_read">You read</small>
+                  {% else %}
+                    <!-- Even though that this else  condition it will be hardly for a user to see it, but any where we include it just for fun.Because whenever a user click on a message that was sent to him/her the is_view will change from False to True -->
+                    <small class="not_read">Please read me</small>
+                  {% endif %}
+                </div>
+              </div>
+              {% if msg.message %}
+                <p>{{msg.message}}</p>
+              {% endif %}
+              {% if msg.image %}
+                <img src="{{msg.image.url}}" alt="" class="img_msg">
+              {% endif %}
+            </div>
+
+          {% endif %}
+        {% endif %}
+        {% endfor %}
+      {% else %}
+        <h3 class="no_result">{{request.user.first_name|upper}} be the first to start conversation in this zone</button></h3>
+      {% endif %}
+    </div>
+        
+    <div class="paginator">
+      {% if message.has_previous %}
+        <a href="?page={{message.previous_page_number}}" class="page_surf">Recent messages</a>
+      {% endif %}
+
+      {% if message.has_next %}
+        <a href="?page={{message.next_page_number}}" class="page_surf">Previous messages</a>
+      {% endif %}
+    </div>
+
+    <form method="POST" class="com_form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Write a message" class="comment_body">
+      <input type="file" name="image" placeholder="Image" accept="image/*">
+      <button type="submit" class="com_btn">Send</button>
+    </form>
+  </div>
+{% endblock main %}

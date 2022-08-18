@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock css %}
+{% block title %}
+  Sign Up
+{% endblock title %}
+
+{% block link %}
+  <a></a>
+  <a href="{% url 'login' %}">Login</a>
+{% endblock link %}
+
+{% block main_left %}
+  <p class="welcome_info">Join the community everywhere every time!</p>
+  <div class="A">
+    <div class="B">
+      <h1 class="C">Zazzone</h1>
+    </div>
+  </div>
+  <p class="ref">
+    <b>Zazzone</b> help you to explore/connect with people and team mate around you, <br />
+    And find out more in Zazzone @ {{this_year}} and on! <br>
+    Usman Musa production
+  </p>
+  <div class="ref_bot">
+    <p>All right reserved <b>Zazzone &copy; {{the_year}}</b></p>
+    <small class="small_link">
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+    </small>
+  </div>
+{% endblock main_left %}
+
+{% block main %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="un_info">
+      <h2>Create an account</h2>
+      <p>Join the community everywhere every time!</p>
+    </div>
+    <input type="text" name="first_name" placeholder="First name" class="input" maxlength="70" required>
+    <input type="text" name="last_name" placeholder="Last name" class="input" maxlength="70" required>
+    <div class="radio">
+      <input type="radio" name="gender" value="female" required> Female
+      <input type="radio" name="gender" value="male" required> Male
+    </div>
+    <div class="calender">
+      <input type="date" name="date_of_birth" required>
+    </div>
+    {% if form.date_of_birth.errors %}
+      <div class="alert-warning">
+        <small>{{form.date_of_birth.errors}}</small>
+      </div>
+    {% endif %}
+    <input type="text" name="username" placeholder="Username" class="input" required>
+    {% if form.username.errors %}
+      <div class="alert-warning">
+        <small>{{form.username.errors}}</small>
+      </div>
+    {% endif %}
+    <input type="email" name="email" placeholder="Email addres" class="input" required>
+    {% if form.email.errors %}
+      <div class="alert-warning">
+        <small>{{form.email.errors}}</small>
+      </div>
+    {% endif %}
+    <input type="tel" name="phone_number" placeholder="Phone number (e.g +12125552368)" class="input" required>
+    <div class="select">
+      {{form.country}}
+    </div>
+    <input type="password" name="password1" placeholder="Password" minlength="8" class="input" required>
+    {% if form.password1.errors %}
+      <div class="alert-warning">
+        <small>{{form.password1.errors}}</small>
+      </div>
+    {% endif %}
+    <input type="password" name="password2" placeholder="Password again" minlength="8" class="input" required>
+    {% if form.password2.errors %}
+      <div class="alert-warning">
+        <small>{{form.password2.errors}}</small>
+      </div>
+      <div class="warn">
+        <small>
+          Password should not be similar to your account information, with a min-length of 8 character and avoid using numeric password entirely. Include symbols to make it strong like (?/@.^*) etc.
+        </small>
+      </div>
+    {% endif %}
+    <button type="submit">Sign Up</button>
+    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+  </form>
+  <div class="ref_bot_2">
+    <p>All right reserved <b>Zazzone &copy; {{this_year}}</b></p>
+    <small class="small_link_2">
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+    </small>
+  </div>
+{% endblock main %}

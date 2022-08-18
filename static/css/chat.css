@@ -1,0 +1,609 @@
+.profile_info{
+  width: 100%;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  background-color: lightgray;
+}
+
+.profile_info h1{
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 0;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  margin-bottom: 5px;
+  color: rgb(3, 3, 55);
+  display: flex;
+  align-items: center;
+  background-color: whitesmoke;
+}
+
+@media only screen and (max-width: 700px){
+  .profile_info h1{
+    flex-direction: column;
+  }
+}
+
+.profile_info h1 img{
+  width: 120px;
+  height: 120px;
+  margin-top: 10px;
+  margin-right: 30px;
+  border-radius: 50%;
+}
+
+.profile_info a{
+  color: black;
+  text-decoration: underline;
+}
+
+.notify{
+  background: red;
+  color: white;
+  display: none;
+}
+
+.f_div{
+  display: flex;
+  overflow: hidden;
+  padding-left: 20px;
+}
+
+.f_div:hover{
+  overflow: auto;
+}
+
+.f_div small{
+  margin: 3px;
+}
+
+.f_div small img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.f_div small a{
+  color: green;
+}
+
+.get_friend{
+  width: 30%;
+  margin-left: 12px;
+  background: lightgrey;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50%;
+  max-height: 35%;
+  border-radius: 12px;
+}
+
+@media only screen and (max-width: 700px){
+  .get_friend{
+    width: 90%;
+  }
+}
+
+.get_friend input{
+  border: none;
+  width: 66%;
+  outline: none;
+  border-radius: 12px;
+  margin-left: 5px;
+  background: transparent;
+}
+
+.get_friend button{
+  border: none;
+  outline: none;
+  width: 25%;
+  height: 100%;
+  text-align: center;
+  background: grey;
+  color: white;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.single_user{
+  width: 90%;
+  border-radius: 9px;
+  border: solid lightgrey 1px;
+  margin-top: 3px;
+  margin-bottom: 1px;
+  padding: 3px  3px 3px 20px;
+  background: white;
+  display: flex;
+  align-items: center;
+}
+
+.alarm_new{
+  color: red;
+  margin-left: 3px;
+}
+
+.single_user_img{
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.single_user a{
+  color: rgb(3, 3, 55);
+}
+
+.is_view_1{
+  color: grey;
+}
+
+.is_view_2{
+  color: dodgerblue;
+}
+
+.is_view_img{
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+
+
+/* for chat room */
+.wrap{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.comments{
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.com_div2{
+  width: 70%;
+  margin-left: 2%;
+  margin-right: 3%;
+  padding: 5px;
+  margin-bottom: 7px;
+  border: solid 1px lightgray;
+  border-radius: 7px;
+  display: flex;
+  background-color: whitesmoke;
+  float: right;
+}
+
+.right_com{
+  margin-left: 5px;
+}
+
+.com_name{
+  margin-top: 1px;
+  color: rgb(3, 3, 55);
+  display: flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 700px){
+  .com_name{
+    margin-top: 1px;
+    color: rgb(3, 3, 55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.com_img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.com_date{
+  color: green;
+}
+
+.com_body{
+  background: whitesmoke;
+  font-size: large;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.img_msg{
+  width: 100%;
+  height: auto;
+}
+
+.is_view_1{
+  color: dodgerblue;
+}
+
+.is_view_2{
+  color: grey;
+}
+
+.com_div{
+  max-width: 70%;
+  margin-left: 2%;
+  margin-right: 3%;
+  padding: 5px;
+  margin-bottom: 7px;
+  border-radius: 7px;
+  display: flex;
+  background-color: lightgray;
+  float: left;
+}
+
+.form_is_view button{
+  border: solid green 1px;
+  border-radius: 5px;
+  background: white;
+  color: green;
+}
+
+.chat_note h3{
+  color: grey;
+  border-top: solid 3px grey;
+  display: flex;
+  justify-content: center;
+}
+
+.com_form{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  background-color: grey;
+}
+
+@media only screen and (max-width: 700px){
+  .com_form{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 3px 0 3px 3px;
+  }
+}
+
+.comment_area{
+  width: 70%;
+  border: none;
+  outline: none;
+  height: 30px;
+  margin-right: 3px;
+  margin-left: 3px;
+  padding-left: 20px;
+  border-radius: 9px;
+  border: solid 1px lightgray;
+}
+
+.msg_img{
+  margin-right: 3px;
+}
+
+.com_form button{
+  width: 70px;
+  height: 30px;
+  margin-right: 3px;
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  background: lightgray;
+}
+
+
+/* these are mostly for zone_message */
+
+.zone{
+  width: 100%;
+  border-radius: 7px;
+  margin-bottom: 5px;
+  background-color: lightgrey;
+}
+
+.zone h1{
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 0;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  margin-bottom: 5px;
+  color: rgb(3, 3, 55);
+  display: flex;
+  align-items: center;
+}
+
+.zone h1 img{
+  width: 100px;
+  height: 100px;
+  margin-right: 30px;
+  border-radius: 50%;
+}
+
+.zone_messages{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.messages{
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.sender{
+  width: 70%;
+  margin: 3px 3% 7px 3%;
+  padding: 5px;
+  border: solid 1px lightgray;
+  border-radius: 7px;
+  background-color: lightgrey;
+  float: right;
+}
+
+.sender_inn{
+  display: flex;
+}
+
+.sender_inn div{
+  display: flex;
+  margin-left: 3px;
+}
+
+@media only screen and (max-width: 700px){
+  .sender_inn div{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.sender p{
+  background: whitesmoke;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.m_date{
+  color: green;
+}
+
+.is_read{
+  color: dodgerblue;
+}
+
+.receiver{
+  width: 70%;
+  margin: 3px 3% 7px 3%;
+  padding: 5px;
+  border: solid 1px gray;
+  border-radius: 7px;
+  background-color: whitesmoke;
+  float: left;
+}
+
+.receiver_inn{
+  display: flex;
+}
+
+.receiver_inn div{
+  display: flex;
+  flex-direction: column;
+  margin-left: 3px;
+}
+
+.receiver_inn div a b{
+  color: black;
+}
+
+.receiver p{
+  background: white;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.m_date{
+  color: green;
+}
+
+.not_read{
+  color: grey;
+}
+
+.com_div2{
+  width: 70%;
+  margin-left: 2%;
+  margin-right: 3%;
+  padding: 5px;
+  margin-bottom: 7px;
+  border: solid 1px lightgray;
+  border-radius: 7px;
+  display: flex;
+  background-color: whitesmoke;
+  float: right;
+}
+
+.right_com{
+  margin-left: 5px;
+}
+
+.com_name{
+  margin-top: 1px;
+  color: rgb(3, 3, 55);
+  display: flex;
+  align-items: center;
+}
+
+.com_img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.com_date{
+  color: green;
+}
+
+.com_body{
+  font-size: large;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.msg_image{
+  width: 90%;
+  height: auto;
+  border-radius: 3px;
+}
+
+.com_div{
+  max-width: 70%;
+  margin: 3px 3% 7px 2%;
+  padding: 5px;
+  border-radius: 7px;
+  display: flex;
+  background-color: lightgray;
+  float: left;
+}
+
+.comment_body{
+  width: 70%;
+  border: none;
+  outline: none;
+  height: 30px;
+  margin-right: 3px;
+  margin-left: 3px;
+  padding-left: 20px;
+  border-radius: 9px;
+  border: solid 1px lightgray;
+}
+
+.com_btn{
+  width: 70px;
+  height: 30px;
+  margin-right: 3px;
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  background: lightgray;
+}
+/* end */
+
+
+/* this is for the zone page */
+
+.search_zone{
+  width: 100%;
+  min-height: 50px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 25px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.search_form{
+  width: 70%;
+  height: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.search_form input{
+  border: none;
+  outline: none;
+  width: 70%;
+  height: 50%;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.search_form button{
+  margin-left: 0px;
+  height: 50%;
+  border: none;
+  border-bottom-right-radius: 25px;
+  border-top-right-radius: 25px;
+  background: grey;
+  color: white;
+}
+
+.zone_new{
+  width: 30%;
+  color: darkgreen;
+  text-decoration: underline;
+}
+
+.zone_new img{
+  width: 30px;
+  height: 30px;
+  border-radius: 10%;
+  margin: 2px 2px 2px 0;
+}
+
+.zone{
+  width: calc(100% - 40px);
+  /* min-height: 50px; */
+  padding: 3px 20px 3px 20px;
+  border-radius: 10px;
+  margin-bottom: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.zone_left{
+  display: flex;
+  align-items: center;
+}
+
+.zone_img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: solid grey 1px;
+}
+
+.zone_left div h1 a{
+  color: green;
+}
+
+.zone_to_join{
+  width: calc(100% - 40px);
+  padding: 3px 20px 3px 20px;
+  border-radius: 10px;
+  margin-bottom: 3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  color: black;
+}
+
+.z_like{
+  color: darkgreen;
+}
+
+.zone_to_join div h1 a{
+  color: grey;
+}
+/* end */

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  profile banner update
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-img">
+    <h1>Update your profile banner</h1>
+    <a href="{% url 'Profile' request.user %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="img_div">
+        <label for="image" class="label_img">Current banner image:</label>
+        {% if form.instance.banner %}
+          <div class="profile_img">
+            <img src="{{form.instance.banner.url}}" alt="{{form.instance}}-img" class="user_prof_img">
+          </div>
+        {% endif %}
+        <input type="file" name="banner" accept="image/*" id="id_image" required>
+        {% if form.banner.errors %}
+          <div class="error">{{form.banner.errors}}</div>
+        {% endif %}
+      </div>
+
+      <br>
+      <button type="submit" class="form_submit">Update banner</button>
+
+    </form>
+  </div>
+{% endblock main %}

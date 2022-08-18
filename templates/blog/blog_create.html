@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/post_create.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  new blog post
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Create new post</h1>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <input type="text" name="title" placeholder="Title (optional)" class="title">
+      {% if form.title.errors %}
+        <div class="error">{{form.title.errors}}</div>
+      {% endif %}
+
+      <textarea name="text" class="text" placeholder="Text here! (optional)" cols="30" rows="15"></textarea>
+      {% if form.text.errors %}
+        <div class="error">{{form.text.errors}}</div>
+      {% endif %}
+
+      <div class="show_code_field" onclick="showSnippetField()">
+        Show field
+      </div>
+      <div class="hide_code_field" onclick="hideSnippetField()">
+        Hide field
+      </div>
+
+      <textarea name="code" id="code" class="code" placeholder="Your source code here! (optional, mainly for developers)" cols="30" rows="15"></textarea>
+      {% if form.code.errors %}
+        <div class="error">{{form.code.errors}}</div>
+      {% endif %}
+
+      <label for="image" class="label_img">Upload an image  (optional):</label>
+      <input type="file" name="image" placeholder="Image" accept="image/*" class="screen">
+      {% if form.image.errors %}
+        <div class="error">{{form.image.errors}}</div>
+      {% endif %}
+      <br>
+
+      <button type="submit">Create</button>
+    </form>
+  </div>
+{% endblock main %}

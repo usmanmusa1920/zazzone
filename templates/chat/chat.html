@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/chat.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  chat
+{% endblock title %}
+
+{% block main %}
+  <div class="profile_info">
+    <h1 onmouseover="n()" onmouseout="setTimeout(m, 3000)">
+      <img src="{{user.image.url}}" alt="{{user.first_name}}">
+      <h1>{{user.first_name}} chat with friends</h1>
+    </h1>
+
+    {% for friend in friend_req %}
+        <div class="notify">
+          You have {{forloop.revcounter}} friend request{{forloop.revcounter|pluralize}}
+          <a href="{% url 'search' %}" class="a_notify">See requests</a>
+        </div>
+    {% endfor %}
+
+    {% if request.user.friends %}
+      <small>Active friends</small>
+      <div class="f_div">
+        {% for friend in request.user.friends.all %}
+          {% if friend == request.user %}
+            <!-- pass -->
+          {% else %}
+            <small>
+              <a href="{% url 'send_message' friend.id %}"><img src="{{friend.image.url}}" alt=""></a>
+            </small>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    
+    {% if request.user.friends.count == 0 %}
+      <h1>Make friend and start chat &nbsp;
+        <form class="get_friend" method="get" action="{% url 'search' %}">
+          {% csrf_token %}
+          <input type="search" name="search_txt" placeholder="Find friend" required>
+          <button type="submit">find</button>
+        </form>
+      </h1>
+    {% endif %}
+    {% if request.user.friends.count == 1 %}
+      <h1>Make friend and start chat &nbsp;
+        <form class="get_friend" method="get" action="{% url 'search' %}">
+          {% csrf_token %}
+          <input type="search" name="search_txt" placeholder="Find friend" required>
+          <button type="submit">find</button>
+        </form>
+      </h1>
+    {% endif %}
+  </div>
+
+
+  {% for msg in msgs %}
+    {% if msg.from_sender == request.user %}
+      <div class="single_user">
+        <img class="single_user_img" src="{{msg.to_receiver.image.url}}" alt="{{msg.to_receiver.first_name}}-profile-image">
+        <a href="{% url 'send_message' msg.to_receiver.id %}">
+          <h2>{{msg.to_receiver.first_name}} {{msg.to_receiver.last_name}}</h2>
+          {% if msg.is_view == False %}
+            {% if msg.from_sender == request.user %}
+              {% if msg.message|length >= 12 %}
+                You: <small class="is_view_1" >{{msg.message|truncatechars:10}}</small>
+              {% else %}
+                You: <small class="is_view_1" >{{msg.message}}</small>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            {% if msg.to_receiver == request.user %}
+              {{msg.from_sender.first_name}}: 
+
+              {% if msg.message|length >= 12 %}
+                You: <small class="is_view_2" >{{msg.message|truncatechars:10}}</small>
+              {% else %}
+                You: <small class="is_view_2" >{{msg.message}}</small>
+              {% endif %}
+
+              <img class="is_view_img" src="{{msg.to_receiver.image.url}}" alt="{{msg.to_receiver.first_name}}-profile-image">
+            {% else %}
+              
+              {% if msg.message|length >= 12 %}
+                You: <small class="is_view_2" >{{msg.message|truncatechars:10}}</small>
+              {% else %}
+                You: <small class="is_view_2" >{{msg.message}}</small>
+              {% endif %}
+              
+              <img class="is_view_img" src="{{msg.to_receiver.image.url}}" alt="{{msg.to_receiver.first_name}}-profile-image">
+            {% endif %}
+          {% endif %}
+        </a>
+      </div>
+    {% else %}
+      <div class="single_user">
+        <img class="single_user_img" src="{{msg.from_sender.image.url}}" alt="{{msg.from_sender.first_name}}-profile-image">
+        <a href="{% url 'send_message' msg.from_sender.id %}">
+          <h2>{{msg.from_sender.first_name}} {{msg.from_sender.last_name}}</h2>
+          {% if msg.is_view == False %}
+            {% if msg.from_sender == request.user %}
+              <!-- pass -->
+            {% else %}
+              {{msg.from_sender.first_name}}: 
+              
+              {% if msg.message|length >= 12 %}
+                <small class="is_view_1" >{{msg.message|truncatechars:10}}</small>
+              {% else %}
+                <small class="is_view_1" >{{msg.message}}</small>
+              {% endif %}
+              
+              <span class="alarm_new">
+                <strong>&plus;1</strong>
+              </span>
+            {% endif %}
+          {% else %}
+            {% if msg.from_sender == request.user %}
+              <!-- pass -->
+            {% else %}
+              {{msg.from_sender.first_name}}: 
+              
+              {% if msg.message|length >= 12 %}
+                <small class="is_view_2" >{{msg.message|truncatechars:10}}</small>
+              {% else %}
+                <small class="is_view_2" >{{msg.message}}</small>
+              {% endif %}
+              
+              <img class="is_view_img" src="{{msg.to_receiver.image.url}}" alt="{{msg.to_receiver.first_name}}-profile-image">
+            {% endif %}
+          {% endif %}
+        </a>
+      </div>
+    {% endif %}
+  {% endfor %}
+  {% if paginator_count.count > 5 %}
+    <div class="paginator_bottom">
+      <div class="paginator">
+        {% if msgs.has_previous %}
+          <a href="?page={{msgs.previous_page_number}}" class="page_surf">Recent messages</a>
+        {% endif %}
+
+        {% if msgs.has_next %}
+          <a href="?page={{msgs.next_page_number}}" class="page_surf">Previous messages</a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock main %}

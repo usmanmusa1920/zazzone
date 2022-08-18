@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/single.css' %}">
+{% endblock css %}
+
+{% block title %}
+  {% if post.title %}
+    {{post.title}} detail
+  {% else %}
+    {% if post.text %}
+      {{post.text}} detail
+    {% else %}
+      {% if post.code %}
+        {{post.code}}
+      {% else %}
+        Board post detail
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endblock title %}
+
+{% block main %}
+  {% block detail_pop %}
+    <div class="detail_popup">
+      <div class="detail_div">
+        {% if post.publisher.owner == request.user %}
+          <a href="{% url 'board:Board_Edit' post.pk request.user %}" class="edit_link">Edit post text</a>
+          <a href="{% url 'board:Board_Edit_Image' post.pk request.user %}" class="edit_link">Edit post image</a>
+          <a href="{% url 'board:Board_Delete' post.pk request.user %}" class="delete_link">Delete post</a>
+        {% else %}
+          {% if post.likers.all.count > 1 %}
+            {% if request.user in post.likers.all %}
+              <a class="liked" href="{% url 'board:board_post_like' post.id request.user %}">{{post.likers.all.count}} Likes</a>
+            {% else %}
+              <a class="dislike" href="{% url 'board:board_post_like' post.id request.user %}">{{post.likers.all.count}} Likes</a>
+            {% endif %}
+          {% else %}
+            {% if request.user in post.likers.all %}
+              <a class="liked" href="{% url 'board:board_post_like' post.id request.user %}">{{post.likers.all.count}} like</a>
+            {% else %}
+              <a class="dislike" href="{% url 'board:board_post_like' post.id request.user %}">{{post.likers.all.count}} like</a>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      </div>
+      <button onclick="hideDetail()"><b>&times;</b></button>
+    </div>
+  {% endblock detail_pop %}
+  <div class="post">
+    <div class="post_head">
+      <div class="post_head_column">
+        <div class="p_head_1">
+          <div class="p_head_1_img">
+            <img src="{{ post.publisher.image.url }}" alt="">
+          </div>
+          <div class="p_head_1_info">
+            <p>
+              <a href="{% url 'board:board' post.publisher.owner.board_owner.id %}">{{post.publisher.owner.first_name}} {{post.publisher.owner.last_name}} Board</a>
+              {% if post.publisher.owner.is_verified %}
+                <span class="verify">
+                  v
+                </span>
+              {% endif %}
+            </p>
+            <small>{{post.pub_date | date:'F d, Y'}}</small>
+          </div>
+        </div>
+        <div class="p_head_2">
+          <button id="show_detail_btn" onclick="showDetail()">
+            <img src="{% static 'img/show_menu.webp' %}" alt="">
+          </button>
+          <button id="hide_detail_btn" onclick="hideDetail()">
+            <img src="{% static 'img/hide_menu.png' %}" alt="">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="post_main">
+      <div class="post_main_column">
+        {% if post.title %}
+          <h1>{{post.title}}</h1>
+        {% endif %}
+        {% if post.image %}
+          <div class="post_main_img">
+            <img src="{{post.image.url}}" alt="">
+          </div>
+        {% endif %}
+        {% if post.text %}
+          <div>
+            <p class="p_text">
+              {{post.text}}
+            </p>
+          </div>
+        {% endif %}
+        {% if post.code %}
+          <div class="post_main_snippet">
+            <pre><code>{{post.code}}</code></pre>
+          </div>
+        {% endif %}
+        <hr>
+        <small class="post_ranks">
+          {% if post.likers.all.count > 1 %}
+            {% if request.user in post.likers.all %}
+              You liked, {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+            {% else %}
+              {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+            {% endif %}
+          {% else %}
+            {% if request.user in post.likers.all %}
+              You liked, {{post.likers.all.count}} like
+            {% else %}
+              {{post.likers.all.count}} like
+            {% endif %}
+          {% endif %}
+          ,
+          {% if comments_2.count > 1 %}
+            {{comments_2.count}} comment{{comments_2.count|pluralize}}
+          {% else %}
+            {{comments_2.count}} comment
+          {% endif %}
+        </small>
+        <div class="post_foot">
+          <div class="post_foot_column">
+            {% if request.user in post.likers.all %}
+              <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="liked">
+                {% csrf_token %}
+                <button type="submit">Liked</button>
+              </form>
+            {% else %}
+              <form action="{% url 'board:board_post_like' post.id request.user %}" method="post" class="post_form_1">
+                {% csrf_token %}
+                <button type="submit">Like</button>
+              </form>
+            {% endif %}
+            <form method="post" class="post_form_2">
+              {% csrf_token %}
+              <img src="{{ request.user.image.url }}" alt="">
+              <input type="text" name="body" placeholder="Write a comment" required>
+              <button type="submit">Comment</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="post_bottom">
+          {% if comments_2.count > 5 %}
+            <div class="paginator" id="paginator">
+              {% if comments_1.has_next %}
+                <a href="?page={{comments_1.next_page_number}}" class="page_surf">See others comments</a>
+                <a href="?page={{comments_1.paginator.num_pages}}" class="page_surf">Oldest</a>
+              {% endif %}
+              
+              {% if request.user == post.publisher %}
+                {% for i in comments_1.paginator.page_range %}
+                  {% if comments_1.number == i %}
+                    <a href="?page={{i}}" class="page_current">{{i}}</a>
+                  {% elif i > comments_1.number|add:'-5' and i < comments_1.number|add:'5' %}
+                    <a href="?page={{i}}" class="page_num">{{i}}</a>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                {% if comments_2.count > 5 %}
+                  {% for i in comments_1.paginator.page_range %}
+                    {% if comments_1.number == i %}
+                      <a href="?page={{i}}" class="page_current">{{i}}</a>
+                    {% elif i > comments_1.number|add:'-2' and i < comments_1.number|add:'2' %}
+                      <a href="?page={{i}}" class="page_num">{{i}}</a>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endif %}
+
+
+              {% if comments_1.has_previous %}
+                <a href="?page=1" class="page_surf">Latest</a>
+                <a href="?page={{comments_1.previous_page_number}}" class="page_surf">Recent comments</a>
+              {% endif %}
+            </div>
+          {% endif %}
+
+
+          {% if comments_1 %}
+            <div class="comments">
+              {% for comment in comments_1 %}
+                <div class="com_div">
+                  <div class="left_com">
+                    <img src="{{comment.commentator.image.url}}" alt="user-img">
+                  </div>
+                  <div class="right_com">
+                    <p class="com_name">
+                      <b>
+                        <a href="#" class="edit_link">{{comment.commentator.first_name}} {{comment.commentator.last_name}}</a>
+                      </b>
+                      <small>{{comment.com_date}}</small>
+                    </p>
+                    <p class="com_body">{{comment.body}}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <h3 class="h3_no">No comment on this post yet</h3>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+{% endblock main %}

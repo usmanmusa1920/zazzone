@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  pdate zone info
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{zone.image.url}}" alt="user-pic">
+    <h1>Update {{zone.name}} info</h1>
+    <a href="{% url 'zone_detail' form.instance.pk request.user %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <input type="text" name="name" placeholder="{{request.user.first_name}} type zone name" maxlength="35" value="{{form.instance.name}}" required>
+      {% if form.name.errors %}
+        <div class="error">{{form.name.errors}}</div>
+      {% endif %}
+
+      {% if form.instance.description == None %}
+        <textarea name="description" placeholder="{{request.user.first_name}} enter your zone description here!" cols="30" rows="15" maxlength="100"></textarea>
+      {% else %}
+        <textarea name="description" placeholder="{{request.user.first_name}} enter your zone description here!" cols="30" maxlength="100" rows="15">{{form.instance.description}}</textarea>
+      {% endif %}
+      
+      <br>
+      <button type="submit">Update Info</button>
+    </form>
+  </div>
+{% endblock main %}

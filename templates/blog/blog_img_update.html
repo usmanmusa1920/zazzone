@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  update blog post image
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Update your post image</h1>
+    <a href="{% url 'Blog_Detail' form.instance.pk %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!-- This div is entirely hidden (display: none), because we only want user to update his post image that is why we hide it-->
+      <div style="display:none">
+        {% if form.instance.title == None %}
+          <input type="text" name="title" placeholder="Title (optional)" class="title">
+        {% else %}
+          <input type="text" name="title" placeholder="Title (optional)" class="title" value="{{form.instance.title}}">
+          {% if form.title.errors %}
+            <div class="error">{{form.title.errors}}</div>
+          {% endif %}
+        {% endif %}
+        <textarea name="text" placeholder="Text here!" cols="30" rows="15">{{form.instance.text}}</textarea>
+        {% if form.text.errors %}
+          <div class="error">{{form.text.errors}}</div>
+        {% endif %}
+        <textarea name="code" placeholder="Your source code here" cols="30" rows="15">{{form.instance.code}}</textarea>
+        {% if form.code.errors %}
+          <div class="error">{{form.code.errors}}</div>
+        {% endif %}
+      </div>
+      <!-- End of div hidden -->
+
+      <div class="img_div">
+        {% if form.instance.image %}
+          <label for="image" class="label_img">Current post image:</label>
+          <div class="profile_img">
+            <img src="{{form.instance.image.url}}" alt="post-img">
+          </div>
+        {% else %}
+          <label for="image" class="label_img">This post have no image, upload an image for this post.</label>
+        {% endif %}
+        <input type="file" name="image" accept="image/*" id="id_image" required>
+        {% if form.image.errors %}
+          <div class="error">{{form.image.errors}}</div>
+        {% endif %}
+      </div>
+
+      <br>
+      <button type="submit">Update image</button>
+    </form>
+  </div>
+{% endblock main %}

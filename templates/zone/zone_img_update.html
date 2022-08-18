@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  profile image update
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{zone.image.url}}" alt="user-img">
+    <h1>Update {{zone.name}} image</h1>
+    <a href="{% url 'zone_detail' form.instance.pk request.user %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="img_div">
+        {% if form.instance.image %}
+          <label for="image" class="label_img">Current zone image:</label>
+          <div class="profile_img">
+            <img src="{{form.instance.image.url}}" alt="{{form.instance}}-img" class="user_prof_img">
+          </div>
+        {% endif %}
+        <input type="file" name="image" accept="image/*" id="id_image" required>
+        {% if form.image.errors %}
+          <div class="error">{{form.image.errors}}</div>
+        {% endif %}
+      </div>
+
+      <br>
+      <button type="submit">Update image</button>
+
+    </form>
+  </div>
+{% endblock main %}

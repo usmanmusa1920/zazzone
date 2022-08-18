@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+{% block title %}
+  {{view_user.first_name}} {{view_user.last_name}} gallery
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{view_user.profile.banner.url}}" alt="{{view_user.username}} banner">
+  </div>
+
+  <div class="view_user_post_pic">
+    {% if galleries %}
+
+      <div class="box">
+        {% for gallery in galleries %}
+          {% if gallery.image %}
+            <div class="div_img">
+              <img src="{{ gallery.image.url }}" alt="post pic">
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% if gallery_count.count > 6 %}
+        {% for gallery in galleries|slice:':1' %}
+
+          {% if gallery.image %}
+            <div class="paginator" id="paginator">
+              {% if galleries.has_previous %}
+                <a href="?page=1" class="page_surf">First</a>
+                <a href="?page={{galleries.previous_page_number}}" class="page_surf">Previous</a>
+              {% endif %}
+
+              {% for i in galleries.paginator.page_range %}
+                {% if galleries.number == i %}
+                  <a href="?page={{i}}" class="page_current">{{i}}</a>
+                {% elif i > galleries.number|add:'-3' and i < galleries.number|add:'3' %}
+                  <a href="?page={{i}}" class="page_num">{{i}}</a>
+                {% endif %}
+              {% endfor %}
+              
+              {% if galleries.has_next %}
+                <a href="?page={{galleries.next_page_number}}" class="page_surf">Next</a>
+              {% endif %}
+              {% if view_user.username == request.user %}
+                <a href="?page={{galleries.paginator.num_pages}}" class="page_surf">Last</a>
+              {% endif %}
+            </div>
+
+          {% else %}
+
+            <p>{{view_user.first_name}}, may have gallery on the next page</p>
+            <div class="paginator" id="paginator">
+              {% if galleries.has_previous %}
+                {% if view_user.username == user.username %}
+                  <a href="?page=1" class="page_surf">First</a>
+                {% endif %}
+                <a href="?page={{galleries.previous_page_number}}" class="page_surf">Previous</a>
+              {% endif %}
+
+              {% for i in galleries.paginator.page_range %}
+                {% if galleries.number == i %}
+                  <a href="?page={{i}}" class="page_current">{{i}}</a>
+                {% elif i > galleries.number|add:'-3' and i < galleries.number|add:'3' %}
+                  <a href="?page={{i}}" class="page_num">{{i}}</a>
+                {% endif %}
+              {% endfor %}
+
+              {% if galleries.has_next %}
+                <a href="?page={{galleries.next_page_number}}" class="page_surf">Next</a>
+              {% endif %}
+              {% if view_user.username == user.username %}
+                <a href="?page={{galleries.paginator.num_pages}}" class="page_surf">Last</a>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+        {% endfor %}
+      {% endif %}
+    {% else %}
+        {% if view_user.gender == 'female' %}
+          <h1>{{view_user.first_name}} have no activity yet, check her
+            <a href="{% url 'board:board' view_user.board_owner.id %}"><b>Board</b></a>
+          </h1>
+        {% else %}
+          <h1>{{view_user.first_name}} have no activity yet, check his
+            <a href="{% url 'board:board' view_user.board_owner.id %}"><b>Board</b></a>
+          </h1>
+        {% endif %}
+    {% endif %}
+  </div>
+{% endblock main %}

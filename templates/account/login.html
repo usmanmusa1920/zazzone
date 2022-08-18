@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock css %}
+{% block title %}
+  Login
+{% endblock title %}
+
+{% block link %}
+  <a></a>
+  <a href="{% url 'signup' %}">Sign Up</a>
+{% endblock link %}
+
+{% block main_left %}
+  <p class="welcome_info">Join the community everywhere every time!</p>
+  <div class="A">
+    <div class="B">
+      <h1 class="C">Zazzone</h1>
+    </div>
+  </div>
+  <p class="ref">
+    <b>Zazzone</b> help you to explore/connect with people and team mate around you, <br />
+    And find out more in Zazzone @ {{the_year}} and on! <br>
+    Usman Musa production
+  </p>
+  <div class="ref_bot">
+    <p>All right reserved <b>Zazzone &copy; {{the_year}}</b></p>
+    <small class="small_link">
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+    </small>
+  </div>
+{% endblock main_left %}
+
+{% block main %}
+  <form method="post" class="login_form">
+    {% csrf_token %}
+    <div class="un_info">
+      <h2>Login to your account</h2>
+      <p>Join the community everywhere every time!</p>
+    </div>
+    {% if form.errors %}
+      <div class="error">
+        <ul>Please enter a correct phone number and password. Note that both fields may be case-sensitive.</ul>
+      </div>
+    {% endif %}
+    <input type="text" name="username" placeholder="Phone number  (e.g. +12125552368)" maxlength="30" required class="input">
+    <input type="password" name="password" placeholder="Password" minlength="8" required class="input">
+    
+    <button type="submit">Login</button>
+    <p>Already have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+  </form>
+  <div class="ref_bot_2">
+    <p>All right reserved <b>Zazzone &copy; {{the_year}}</b></p>
+    <small class="small_link_2">
+      <a href="{% url 'about' %}">About</a>
+      <a href="{% url 'contact' %}">Contact</a>
+      <a href="{% url 'privacy' %}">Privacy</a>
+    </small>
+  </div>
+{% endblock main %}

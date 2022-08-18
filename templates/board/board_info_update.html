@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  board update
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Update your board info</h1>
+    <a href="{% url 'board:board' request.user.board_owner.id %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+        
+      {% if form.instance.description == None %}
+        <input type="text" name="description" placeholder="{{request.user.board_owner.owner.first_name}} enter your board description here!" maxlength="70">
+      {% else %}
+        <input type="text" name="description" placeholder="{{request.user.board_owner.owner.first_name}} enter your board description here!" maxlength="70" value="{{form.instance.description}}">
+      {% endif %}
+
+      {% if form.description.errors %}
+        <div class="error">{{form.description.errors}}</div>
+      {% endif %}
+      <br>
+      <button type="submit">Update Info</button>
+    </form>
+  </div>
+{% endblock main %}

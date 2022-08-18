@@ -1,0 +1,389 @@
+.main_column{
+  width: 70%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 700px){
+  .main_column{
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.sub_head{
+  width: 100%;
+  min-height: 50px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border-radius: 25px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+}
+
+.sub_head form{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.sub_head form input{
+  border: none;
+  outline: none;
+  width: 70%;
+  height: 60%;
+  border-radius: 25px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.sub_head form button {
+  margin-left: 5px;
+  border: none;
+  width: 27%;
+  height: 60%;
+  font-size: large;
+  border-radius: 25px;
+  color: white;
+  background-color: grey;
+}
+
+.search_notify{
+  display: flex;
+  align-items: center;
+  width: 90%;
+  min-height: 30px;
+  height: auto;
+  border-radius: 12px;
+  background-color: lightgrey;
+  /* color: white; */
+  margin: 0px 0px 2px 0px;
+  padding: 0px 10px 0px 10px;
+}
+
+.search_notify p span{
+  color: green;
+  text-decoration: underline;
+}
+
+.f_list{
+  width: 90%;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  background-color: white;
+  padding: 1px 30px 1px 30px;
+}
+
+@media only screen and (max-width: 700px){
+  .f_list{
+    flex-direction: column;
+  }
+}
+
+.div{
+  display: flex;
+  align-items: center;
+}
+
+.div img{
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.a_div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.a_div a{
+  color: green;
+}
+
+.a_div small{
+  margin-bottom: 3px;
+}
+
+.f_list p{
+  padding: 1px;
+  color: grey;
+}
+
+.b_div{
+  display: flex;
+  align-items: center;
+}
+
+.a1 button, .peace{
+  border: solid 1px green;
+  background: transparent;
+  color: green;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+}
+
+.a2 button, .danger{
+  border: solid 1px red;
+  background: transparent;
+  color: red;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+}
+
+.paginate_req{
+  width: 97%;
+  padding: 5px;
+  margin-bottom: 1px;
+  display: flex;
+  justify-content: 2px;
+  align-items: center;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.page_req_surf{
+  color: dodgerblue;
+  border-radius: 3px;
+  margin: 3px;
+  padding: 2px;
+  border: solid dodgerblue 1px;
+}
+
+.select_result{
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  align-items: center;
+  width: 97%;
+  min-height: 30px;
+  background-color: lightgrey;
+  margin: 2px;
+  padding: 3px 10px 3px 10px;
+}
+
+.select_result a{
+  border: none;
+  color: grey;
+  background: white;
+  border-radius: 7px;
+  margin: 5px;
+  padding: 0 5px 0 5px;
+}
+
+#all_result_btn{
+  color: white;
+  background: grey;
+}
+
+.search_his_1{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  background-color: whitesmoke;
+  margin: 0px 0px 2px 0px;
+  padding: 0px 10px 0px 10px;
+}
+
+.search_his_2{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  background-color: lightgrey;
+  margin: 0px 0px 2px 0px;
+  padding: 0px 10px 0px 10px;
+}
+
+.search_his_2 p span{
+  color: green;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.search_his_2 form button{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+
+  background: grey;
+  color: white;
+  border: none;
+}
+
+.all_result{
+  width: 100%;
+}
+
+.result_note{
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3px;
+  background-color: whitesmoke;
+  padding: 3px 3px 3px 30px;
+}
+
+.result_note span{
+  color: green;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.search_result{
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  background-color: lightgrey;
+  padding: 3px 30px 3px 30px;
+}
+
+.friend_d{
+  display: flex;
+}
+
+@media only screen and (max-width: 700px){
+  .friend_d{
+    flex-direction: column;
+  }
+}
+
+.search_left{
+  height: 80px;
+  width: 80px;
+  display: flex;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  border: solid grey 1px;
+}
+
+.search_left img{
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+
+.side_info{
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.side_info span h2{
+  display: flex;
+  align-items: center;
+}
+
+.side_info span h2 a{
+  color: green;
+}
+
+.side_info_post p a{
+  color: rgb(3, 3, 55);
+}
+
+.side_info small a{
+  color: green;
+}
+
+.verify{
+  background-color: dodgerblue;
+  color: white;
+  width: 20px;
+  height:20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.side_info small{
+  margin: 0;
+  color: grey;
+}
+
+.friend_div{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.post_img{
+  width: 100px;
+  height: auto;
+  border-radius: 3px;
+}
+
+.friend_div a{
+  /* background-color: grey; */
+  /* color: white; */
+  border-radius: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.paginator_all{
+  width: 97%;
+  padding: 5px;
+  margin-bottom: 1px;
+  display: flex;
+  justify-content: 2px;
+  align-items: center;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.paginator_all a{
+  color: grey;
+  border-radius: 3px;
+  margin: 3px;
+  padding: 2px;
+  border: solid grey 1px;
+}
+
+.people_result, .user_board_result, .board_result, .blog_result, .zone_result{
+  width: 100%;
+  display: none;
+}
+
+.no_result{
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3px;
+  background-color: lightgrey;
+  padding: 3px 3px 3px 30px;
+}
+
+.no_result span{
+  color: red;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.search_user_or_board{
+  display: none;
+}

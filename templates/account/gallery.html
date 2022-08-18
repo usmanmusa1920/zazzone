@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+{% block title %}
+  my gallery
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{request.user.profile.banner.url}}" alt="{{request.user}} banner">
+  </div>
+
+  <div class="user_post_pic">
+    {% if galleries %}
+    
+      <div class="box">
+        {% for gallery in galleries %}
+          {% if gallery.image %}
+            <div class="div_img">
+              <img src="{{ gallery.image.url }}" alt="post pic">
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% for gallery in galleries|slice:':1' %}
+
+        {% if gallery.image %}
+          {% if is_paginated %}
+            <div class="paginator" id="paginator">
+              {% if page_obj.has_previous %}
+                <a href="?page=1" class="page_surf">First</a>
+                <a href="?page={{page_obj.previous_page_number}}" class="page_surf">Previous</a>
+              {% endif %}
+              {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                  <a href="?page={{i}}" class="page_current">{{i}}</a>
+                {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                  <a href="?page={{i}}" class="page_num">{{i}}</a>
+                {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+                <a href="?page={{page_obj.next_page_number}}" class="page_surf">Next</a>
+              {% endif %}
+              {% if user.username == user.username %}
+                <a href="?page={{page_obj.paginator.num_pages}}" class="page_surf">Last</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% else %}
+
+          <p>{{user.first_name}}, you may have gallery on the next page</p>
+          {% if is_paginated %}
+            <div class="paginator" id="paginator">
+              {% if page_obj.has_previous %}
+                <a href="?page=1" class="page_surf">First</a>
+                <a href="?page={{page_obj.previous_page_number}}" class="page_surf">Previous</a>
+              {% endif %}
+              {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                  <a href="?page={{i}}" class="page_current">{{i}}</a>
+                {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                  <a href="?page={{i}}" class="page_num">{{i}}</a>
+                {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+                <a href="?page={{page_obj.next_page_number}}" class="page_surf">Next</a>
+              {% endif %}
+              <a href="?page={{page_obj.paginator.num_pages}}" class="page_surf">Last</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <h1>{{user.first_name}} you have no activity yet, check your
+        <a href="{% url 'board:board' request.user.board_owner.id %}"><b>Board</b></a> OR 
+        <a href="{% url 'Blog_Create' %}">create new blog</a>
+      </h1>
+    {% endif %}
+  </div>
+{% endblock main %}

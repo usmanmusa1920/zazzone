@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+
+{% block title %}
+  {{view_user.first_name}} {{view_user.last_name}} iRatio
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{view_user.profile.banner.url}}" alt="{{view_user.first_name}} banner">
+  </div>
+
+  <div class="profile_info">
+    <div>
+      <img src="{{view_user.image.url}}" alt="{{view_user.first_name}}">
+      {{view_user.first_name}} {{view_user.last_name}} iRatio
+      {% if view_user.is_verified %}
+        <div class="verified">
+          v
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="update_div">
+      {% if request.user == view_user %}
+        <a href="{% url 'Profile' view_user.username %}"><b>Profile</b></a>
+      {% else %}
+        <a href="{% url 'profile_user' view_user %}"><b>{{view_user.first_name}} profile</b></a>
+      {% endif %}
+
+      {% if view_user == request.user %}
+        <a href="{% url 'Gallery' request.user %}"><b>My gallery</b></a>
+      {% else %}
+        <a href="{% url 'gallery_user' view_user %}"><b>{{view_user.first_name}} gallery</b></a>
+      {% endif %}
+    </div>
+
+    {% if request.user == view_user %}
+      <div class="update_div">
+        <a href="{% url 'iratio_new' request.user %}">New iRatio</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="panel_div">
+    {% if iratios.all.count > 1 %}
+      {{view_user.first_name}} {{view_user.last_name}} have {{iratios.all.count}} iRatio{{iratios.all.count|pluralize}}
+    {% else %}
+      {{view_user.first_name}} {{view_user.last_name}} have {{iratios.all.count}} iRatio
+    {% endif %}
+  </div>
+
+  {% if iratio %}
+    {% for iratio in iratio %}
+      <div class="post">
+        <small>
+          <span>{{iratio.solver.first_name}} {{iratio.solver.last_name}} iRatio</span>
+          <br>
+          posted on {{iratio.pub_date}}
+        </small>
+        <hr>
+        <br>
+        <p>
+          <span class="i_s_1">{{iratio.first}}</span> &nbsp;
+          {% if iratio.operator == 'add' %}
+            + &nbsp;
+          {% endif %}
+          {% if iratio.operator == 'subtract' %}
+            - &nbsp;
+          {% endif %}
+          {% if iratio.operator == 'multiply' %}
+            * &nbsp;
+          {% endif %}
+          {% if iratio.operator == 'divide' %}
+            / &nbsp;
+          {% endif %}
+          <span class="i_s_2">{{iratio.second}}</span>
+          =
+          <span class="i_s_3">{{iratio.result}}</span>
+        </p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="panel_div">
+      <small>This iratio page contains nothing</small>
+    </div>
+  {% endif %}
+
+  {% if iratios.count > 5 %}
+    <div class="paginator" id="paginator">
+      {% if iratio.has_previous %}
+        {% if view_user == request.user %}
+          <a href="?page=1" class="page_surf">First</a>
+        {% endif %}
+        <a href="?page={{iratio.previous_page_number}}" class="page_surf">Previous</a>
+      {% endif %}
+
+      {% for i in iratio.paginator.page_range %}
+        {% if iratio.number == i %}
+          <a href="?page={{i}}" class="page_current">{{i}}</a>
+        {% elif i > iratio.number|add:'-3' and i < iratio.number|add:'3' %}
+          <a href="?page={{i}}" class="page_num">{{i}}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if iratio.has_next %}
+        <a href="?page={{iratio.next_page_number}}" class="page_surf">Next</a>
+        {% if view_user == request.user %}
+          <a href="?page={{iratio.paginator.num_pages}}" class="page_surf">Last</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock main %}

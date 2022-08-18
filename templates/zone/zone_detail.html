@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+
+{% block js %}
+  <script src="{% static 'js/chat.js' %}"></script>
+{% endblock js %}
+
+{% block title %}
+  {% if zone.zone_type == 'public' %}
+    {{zone.name}} {{zone.zone_type}} zone detail
+  {% elif zone.zone_type == 'business' %}
+    {{zone.name}} {{zone.zone_type}} zone detail
+  {% elif zone.zone_type == 'school' %}
+    {{zone.name}} {{zone.zone_type}} zone detail
+  {% elif zone.zone_type == 'family' %}
+    {{zone.name}} {{zone.zone_type}} zone detail
+  {% else %}
+  {{zone.name}} {{zone.custom_zone_type}} zone detail
+  {% endif %}
+{% endblock title %}
+
+{% block main %}
+  <div class="profile_info">
+    <div class="zone_detail">
+      <h1>
+        <img src="{{zone.image.url}}" alt="{{zone.name}}-profile-image">
+      </h1>
+      <h1>{{zone.name}} zone Detail</h1>
+
+      {% if request.user in zone.members.all %}
+        &nbsp; <a href="{% url 'zone_message' zone.id %}" class="green">Chat room</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="zone_info">
+
+    <div class="zone_detail">
+      {% if request.user == zone.creator %}
+        <a href="{% url 'delete_zone' request.user zone.id %}" class="danger">Delete this zone ({{zone.name}})</a>
+      {% else %}
+        {% if request.user in zone.members.all %}
+          <a href="{% url 'leave_zone' zone.id %}" class="danger">Leave this zone ({{zone.name}})</a>
+        {% endif %}
+      {% endif %}
+
+      {% if request.user == zone.creator %}
+        <a href="{% url 'edit_zone_image' zone.id %}" class="green">Edit zone image</a>
+        <a href="{% url 'edit_zone_info' zone.id %}" class="green">Edit zone info</a>
+      {% endif %}
+      
+      {% if request.user not in zone.members.all %}
+        <a href="{% url 'join_zone' zone.id %}" class="green"><p>Join zone</p></a>
+      {% endif %}
+
+      {% if request.user == zone.creator %}
+        {% if zone.members.count == 1 %}
+          <h2 class="no_result">You are the only one in this zone, populate it by adding members</h2>
+        {% endif %}
+      {% else %}
+        <!-- pass -->
+      {% endif %}
+
+      {% if zone.members.count > 1 %}
+        <br>
+        <small>
+          Creator:
+          <a href="{% url 'profile_user' zone.creator %}" class="green">{{zone.creator.first_name}} {{zone.creator.last_name}}</a>
+          <img src="{{zone.creator.image.url}}" alt="" class="zone_mem">
+          <br>
+          
+          {% if zone.description %}
+            Description: {{zone.description}}
+            Since: {{zone.timestamp|date:'F d, Y'}}
+          {% endif %}
+        </small>
+        <br>
+
+        <p class="no_result">There are {{zone.members.count}} member{{zone.members.count|pluralize}} in this zone</p>
+      {% endif %}
+    </div>
+    
+    <div class="zone_members">
+      <div class="zone_inn">
+        {% for zone_mem in zone.members.all %}
+          {% if zone_mem == request.user %}
+            <div class="com_div">
+              <div class="right_com">
+                <p class="com_name">
+                  <img src="{{zone.image.url}}" alt="" class="zone_mem">
+                  <b class="green">
+                    {{zone_mem.first_name}} {{zone_mem.last_name}}
+                  </b>
+                </p>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if zone_mem != request.user %}
+            <div class="com_div">
+              <div class="right_com">
+                <p class="com_name">
+                  <img src="{{zone_mem.image.url}}" alt="" class="zone_mem">
+                  <b>
+                    <a href="{% url 'profile_user' zone_mem %}" class="green">{{zone_mem.first_name}} {{zone_mem.last_name}}</a>
+                  </b>
+                </p>
+                {% if request.user == zone.creator %}
+                  <a href="{% url 'remove_member' zone_mem.id zone.id  %}" class="danger"><p>Remove {{zone_mem.first_name}} from this zone</p></a>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock main %}

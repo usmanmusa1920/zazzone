@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock css %}
+
+{% block title %}
+  update blog post text
+{% endblock title %}
+
+{% block main %}
+  <div class="sub_head">
+    <img src="{{user.image.url}}" alt="user-pic">
+    <h1>Update your post</h1>
+    <a href="{% url 'Blog_Detail' form.instance.pk %}">Back</a>
+  </div>
+
+  <div class="form_div">
+    <form method="POST" class="form" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% if form.instance.title == None %}
+        <input type="text" name="title" placeholder="Title (optional)" class="title">
+      {% else %}
+        <input type="text" name="title" placeholder="Title (optional)" class="title" value="{{form.instance.title}}">
+        {% if form.title.errors %}
+          <div class="error">{{form.title.errors}}</div>
+        {% endif %}
+      {% endif %}
+
+      <textarea name="text" placeholder="Text here!" cols="30" rows="15">{{form.instance.text}}</textarea>
+      {% if form.text.errors %}
+        <div class="error">{{form.text.errors}}</div>
+      {% endif %}
+      <textarea name="code" placeholder="Your source code here" cols="30" rows="15">{{form.instance.code}}</textarea>
+      {% if form.code.errors %}
+        <div class="error">{{form.code.errors}}</div>
+      {% endif %}
+
+      <button type="submit" class="form_submit">Update post</button>
+    </form>
+  </div>
+{% endblock main %}

@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/profile_head.css' %}">
+{% endblock css %}
+{% block title %}
+  profile
+{% endblock title %}
+
+{% block main %}
+  <div class="banner_head">
+    <img src="{{request.user.profile.banner.url}}" alt="">
+  </div>
+
+  <div class="profile_info">
+    <div>
+      <img src="{{request.user.image.url}}" alt="{{request.user}}">
+      <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
+      {% if request.user.is_verified %}
+        <h1 class="verified">
+          v
+        </h1>
+      {% endif %}
+    </div>
+
+    <p class="p_tag">
+      From {{request.user.country.name}} ({{request.user.country}}) &nbsp; <img src="{{request.user.country.flag}}" alt=""> &nbsp; Joined {{request.user.date_joined | date:'F, Y'}}
+    </p>
+
+    <p class="p_tag">
+      Gender: {{request.user.gender}}, born on: {{request.user.date_of_birth}}
+    </p>
+
+    <p class="p_tag">
+      <img src="{% static 'img/phone.png' %}" alt="mobile_number" class="p_tag_img"> &nbsp; {{inter_num}}
+    </p>
+
+    {% if carrier == '' %}
+      <!-- pass -->
+    {% else %}
+      <p class="p_tag">
+        Your carrier: {{carrier}}
+      </p>
+      <p class="p_tag">
+        {{time_zone_1}}
+      </p>
+      <p class="p_tag">
+        {{time_zone_2}}
+      </p>
+    {% endif %}
+      
+    <p class="p_tag">
+      <img src="{% static 'img/link.png' %}" alt="email" class="p_tag_img"> &nbsp; {{request.user.email}}
+    </p>
+    <br>
+
+    {% if posts %}
+      <p class="p_tag">
+        <small>{{request.user.first_name}} you have {{page_obj.paginator.count}} post{{page_obj.paginator.count|pluralize}}</small>
+      </p>
+    {% endif %}
+
+    {% if followers.count > 0 %}
+      <div class="f_div">
+        <small>
+          <img src="{{last_follower.board_owner.image.url}}" alt="{{follower}}">
+          <a href="{% url 'board:board' last_follower.board_owner.id %}">{{last_follower.first_name}} {{last_follower.last_name}}</a>
+        </small>
+
+        <small>
+          You have {{followers.all.count}} follower{{followers.all.count|pluralize}}
+        </small>
+      </div>
+    {% else %}
+      <div class="f_div">
+        <small>
+          You have no follower
+        </small>
+      </div>
+    {% endif %}
+    
+    <div class="f_div">
+      {% for friend in my_friends|slice:":2" %}
+        {% if friend == request.user %}
+          <!-- pass -->
+        {% else %}
+          <small>
+            <img src="{{friend.image.url}}" alt="">
+            <a href="{% url 'profile_user' friend %}">{{friend.first_name}} {{friend.last_name}}</a>
+          </small>
+        {% endif %}
+      {% endfor %} &nbsp; &nbsp;
+      <small>
+        {% if request.user.friends.all.count > 0 %}
+          {{request.user.friends.all.count}} friend{{request.user.friends.all.count|pluralize}}
+        {% else %}
+          You have no friend yet
+        {% endif %}
+      </small>
+    </div>
+
+    {% if request.user.profile.bio %}
+      <p class="user_bio">{{user.profile.bio}}</p>
+    {% endif %}
+
+    <div class="update_div" id="update_div">
+      <a href="{% url 'profile_update' %}"><b>Edit profile</b></a>
+      <a href="{% url 'image_update' %}"><b>Update profile image</b></a>
+      <a href="{% url 'banner_update' %}"><b>Update banner image</b></a>
+      <a href="{% url  'privacy_page' %}"><b>Privacy</b></a>
+    </div>
+
+    <div class="sub_head">
+      <div class="sub_head_inn">
+        {% if not request.user.profile.bio %}
+          <p class="p_tag">{{request.user.first_name}} you have not drop your bio</p>
+        {% endif %}
+        {% if request.user.profile.institution %}
+          {% if request.user.is_study_status %}
+            <p class="p_tag">You are currently studying in {{request.user.profile.institution}}</p>
+          {% else %}
+            <p class="p_tag">You studied at {{request.user.profile.institution}}</p>
+          {% endif %}
+        {%else%}
+          <p class="p_tag">Hey, {{request.user.first_name}} you have not drop your institution</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel_div">
+    <a href="{% url 'board:board' request.user.board_owner.id %}"><b>My board</b></a>
+    <a href="{% url 'iratio' request.user request.user.id %}"><b>iRatio</b></a>
+    <a href="{% url 'profile_user' request.user %}"><b>How people see your profile</b></a>
+  </div>
+
+  {% if posts %}
+    {% for post in posts %}
+      <div class="post">
+        <div class="post_head">
+          <div class="post_head_column">
+            <div class="p_head_1">
+              <div class="p_head_1_img">
+                <img src="{{ request.user.image.url }}" alt="">
+              </div>
+              <div class="p_head_1_info">
+                <p><a>{{post.publisher.first_name}} {{post.publisher.last_name}}</a></p>
+                <small>{{post.pub_date | date:'F d, Y'}}</small>
+              </div>
+            </div>
+            <div class="p_head_2">
+              <a href="{% url 'Blog_Detail' post.pk %}">
+                <img src="{% static 'img/info.jpg' %}" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="post_main">
+          <div class="post_main_column">
+            {% if post.title %}
+              <h1>{{post.title}}</h1>
+            {% endif %}
+
+            {% if post.image %}
+              <div class="post_main_img">
+                <img src="{{post.image.url}}" alt="">
+              </div>
+            {% endif %}
+
+            {% if post.text|length >= 220 %}
+              {% if post.text %}
+                <p>{{post.text|truncatechars:200}}</p>
+                <a class="post_more" href="{% url 'Blog_Detail' post.pk %}"><b>read more</b></a>
+              {% endif %}
+            {% else %}
+              {% if post.text %}
+                <p>{{post.text|truncatechars:200}}</p>
+              {% endif %}
+            {% endif %}
+
+            {% if post.code %}
+              <div class="post_main_snippet">
+                <pre><code>{{post.code}}</code></pre>
+              </div>
+            {% endif %}
+
+            <hr>
+            <small>
+              {% if post.likers.all.count > 1 %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% else %}
+                  {{post.likers.all.count}} like{{post.likers.all.count|pluralize}}
+                {% endif %}
+              {% else %}
+                {% if request.user in post.likers.all %}
+                  You liked, {{post.likers.all.count}} like
+                {% else %}
+                  {{post.likers.all.count}} like
+                {% endif %}
+              {% endif %}
+    
+              ,
+              
+              {% if post.comment_set.count == 0 %}
+                {{post.comment_set.count}} comment
+              {% else %}
+                {{post.comment_set.count}} comment{{post.comment_set.count|pluralize}}
+              {% endif %}
+            </small>
+            <div class="post_foot">
+              <div class="post_foot_column">
+                {% if request.user in post.likers.all %}
+                  <form action="{% url 'blog_like' post.pk %}" method="post" class="liked">
+                    {% csrf_token %}
+                    <button type="submit">Liked</button>
+                  </form>
+                {% else %}
+                  <form action="{% url 'blog_like' post.pk %}" method="post" class="post_form_1">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                  </form>
+                {% endif %}
+                <form action="{% url 'Blog_Detail' post.pk %}" method="post" class="post_form_2">
+                  {% csrf_token %}
+                  <img src="{{ request.user.image.url }}" alt="">
+                  <input type="text" name="body" placeholder="Write a comment" required>
+                  <button type="submit">Comment</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>{{request.user.first_name}} you have no activity yet, check your
+      <a href="{% url 'board:board' request.user.board_owner.id %}" class="black"><b>Board</b></a> OR 
+      <a href="{% url 'Blog_Create' %}" class="black">create new post</a> OR <small><a href="{% url 'board:Board_Create' request.user %}" class="black">Add something on your board</a></small>
+    </p>
+  {% endif %}
+{% endblock main %}
+
+
+
+{% block pagination %}
+  {% if is_paginated %}
+      <div class="paginator" id="paginator">
+        {% if page_obj.has_previous %}
+          <a href="?page=1" class="page_surf">First</a>
+          <a href="?page={{page_obj.previous_page_number}}" class="page_surf">Previous</a>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+          {% if page_obj.number == i %}
+            <a href="?page={{i}}" class="page_current">{{i}}</a>
+          {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+            <a href="?page={{i}}" class="page_num">{{i}}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a href="?page={{page_obj.next_page_number}}" class="page_surf">Next</a>
+          <a href="?page={{page_obj.paginator.num_pages}}" class="page_surf">Last</a>
+        {% endif %}
+      </div>
+    {% endif %}
+{% endblock pagination %}

@@ -31,39 +31,39 @@ NOTE:
 Change the path of default images, after deploying
 
 
-# In the view:
-# from django.core.mail import send_mail
-# from django.conf import settings
+In the view:
+from django.core.mail import send_mail
+from django.conf import settings
 
 
-# def message(request):
-    # subject_email = form.cleaned_data.get('subject')
-    # email_message_body = form.cleaned_data.get('message_body')
-    # recepient = [message_now.email]
-    # send_mail(subject_email, email_message_body, settings.EMAIL_HOST_USER, recepient, auth_user='Usman Musa Website')
+def message(request):
+    subject_email = form.cleaned_data.get('subject')
+    email_message_body = form.cleaned_data.get('message_body')
+    recepient = [message_now.email]
+    send_mail(subject_email, email_message_body, settings.EMAIL_HOST_USER, recepient, auth_user='Usman Musa Website')
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = '<user>@gmail.com' # OR os.environ.get('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = '******************' # OR os.environ.get('EMAIL_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '<user>@gmail.com' # OR os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = '******************' # OR os.environ.get('EMAIL_PASSWORD')
 
 
-# # For yahoo
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.mail.yahoo.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = '<user>@yahoo.com'
-# EMAIL_HOST_PASSWORD = '****************'
+For yahoo
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.yahoo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '<user>@yahoo.com'
+EMAIL_HOST_PASSWORD = '****************'
 
 
-# For localhost
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 1025
-# from django.core.mail import EmailMessage
-# email = EmailMessage('PasswordResetEmail', 'Hello kindly follow this link for password backup', 'Skysurf', to=['user@gmail.com'])
-# email.send()
+For localhost
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+from django.core.mail import EmailMessage
+email = EmailMessage('PasswordResetEmail', 'Hello kindly follow this link for password backup', 'Skysurf', to=['user@gmail.com'])
+email.send()

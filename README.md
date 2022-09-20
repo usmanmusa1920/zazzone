@@ -28,7 +28,7 @@ MODULES (libraries)
 
 
 NOTE:
-Change the path of default images, after deploying
+Change the path of default images, before/when deploying for production to meet your VM route
 
 
 In the view:

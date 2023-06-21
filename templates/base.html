@@ -39,7 +39,7 @@
               <img src="{% static 'img/hide_menu.png' %}" alt="">
             </button>
           {% else %}
-            <a class="logo"><h1>Zazzone</h1></a>
+            <a href="/" class="logo"><h1>Zazzone</h1></a>
           {% endif %}
         </div>
 
@@ -146,10 +146,10 @@
               {% endif %}
             {% endfor %}
             <br>
+            <div class="other_links">
+              <a href="{% url 'about' %}">About</a>
+            </div>
           {% endif %}
-          <div class="other_links">
-            <a href="{% url 'about' %}">About</a>
-          </div>
 
           {% block main_left %}
             <!-- inheritance -->

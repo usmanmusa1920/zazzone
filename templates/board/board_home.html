@@ -27,7 +27,7 @@
               </div>
             </div>
             <div class="p_head_2">
-              <a href="{% url 'board:Board_Detail' post.pk request.user %}">
+              <a href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}">
                 <img src="{% static 'img/info.jpg' %}" alt="">
               </a>
             </div>
@@ -48,7 +48,7 @@
               {% if post.text %}
                 <p>
                   {{post.text|truncatechars:200}}
-                  <a class="post_more" href="{% url 'board:Board_Detail' post.pk request.user %}"><b>read more</b></a>
+                  <a class="post_more" href="{% url 'board:Board_Detail' post.pk post.publisher.owner %}"><b>read more</b></a>
                 </p>
               {% endif %}
             {% else %}

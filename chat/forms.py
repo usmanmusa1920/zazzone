@@ -3,7 +3,6 @@ from .models import Message
 
 
 class MessageForm(forms.ModelForm):
-  
-  class Meta:
-    model = Message
-    fields = ['message', 'image']
+    class Meta:
+        model = Message
+        fields = ['message', 'image']

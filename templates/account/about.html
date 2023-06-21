@@ -25,7 +25,7 @@
   <h5 id="contact_page">Contact us</h5>
   <div class="abt_div">
     <p>You can deliver your tought and what you feel about us here, and we will review at the earliest.</p>
-    <form action="{% url 'about' %}" method="post">
+    <form action="mailto:usmanmusa1920@gmail.com" method="post">
       {% csrf_token %}
       {% if request.user.is_authenticated %}
         <input type="text" name="full_name" placeholder="Your full name" value="{{request.user.first_name}} {{request.user.last_name}}" required>
@@ -99,7 +99,7 @@
 
   <h5>Contributors:</h5>
   <div class="abt_div">
-    <h5><a href="/Shehu/profile">Usman Musa</a></h5>
+    <h5><a href="https://usmanmusa1920.github.io">Usman Musa</a></h5>
     <img src="{% static 'img/default_user.png' %}" alt="">
     <p>
       <i>The founder, server and back end splash</i>
@@ -107,7 +107,7 @@
   </div>
 
   <div class="abt_div">
-    <h5><a href="/Shehu/profile">The client side</a></h5>
+    <h5><a href="https://usmanmusa1920.github.io">The client side</a></h5>
     <img src="{% static 'img/default_user.png' %}" alt="">
     <p>
       <i>The client, client and education splash</i>
@@ -115,7 +115,7 @@
   </div>
 
   <div class="abt_div">
-    <h5><a href="/Shehu/profile">Our designer</a></h5>
+    <h5><a href="https://usmanmusa1920.github.io">Our designer</a></h5>
     <img src="{% static 'img/default_user.png' %}" alt="">
     <p>
       <i>The designer, designer and wireframe splash</i>

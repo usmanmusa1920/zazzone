@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    
+
+
     # my apps
     'blog.apps.BlogConfig',
     'account.apps.AccountConfig',
@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'iratio.apps.IratioConfig',
     'chat.apps.ChatConfig',
     'board.apps.BoardConfig',
-    
-    #dj apps
+
+    # dj apps
     'phonenumber_field',
     'django_countries',
 ]
@@ -156,27 +156,46 @@ LOGIN_URL = 'login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'myemail@gmail.com' # OR os.environ.get('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = 'my_app_password' # OR os.environ.get('EMAIL_PASSWORD')
+# The following are email setup (variables), add them in the settings.py file
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '<user>@gmail.com' # OR os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = '******************' # OR os.environ.get('EMAIL_PASSWORD') # app password
 
 
-# # For yahoo
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.mail.yahoo.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'myemail@yahoo.com'
-# EMAIL_HOST_PASSWORD = 'my_app_password'
+# for yahoo
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.yahoo.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = '<user>@yahoo.com'
+EMAIL_HOST_PASSWORD = '****************' # app password
+"""
+# The following are email setup (function for smtp server), add the following in view
+from django.core.mail import send_mail
+from django.conf import settings
 
 
-# For localhost
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 1025
-# from django.core.mail import EmailMessage
-# email = EmailMessage('PasswordResetEmail', 'Hello kindly follow this link for password backup', 'Skysurf', to=['user@gmail.com'])
-# email.send()
+def message(request):
+    subject_email = form.cleaned_data.get('subject')
+    email_message_body = form.cleaned_data.get('message_body')
+    recepient = [message_now.email]
+    send_mail(
+        subject_email, email_message_body, settings.EMAIL_HOST_USER, recepient, auth_user='Usman Musa Website')
+"""
+
+
+# for localhost
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+"""
+# simple localhost email setup (in views)
+from django.core.mail import EmailMessage
+
+email = EmailMessage(
+    'PasswordResetEmail', 'Hello kindly follow this link for password backup', 'Skysurf', to=['user@gmail.com'])
+email.send()
+"""
